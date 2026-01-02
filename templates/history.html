@@ -1,0 +1,166 @@
+{% extends 'base.html' %} {% block title %}Forecast History - Galaxy Weather{%
+endblock %} {% block content %}
+<div class="history-page">
+	<section class="page-header">
+		<div class="section-container">
+			<a href="{{ url_for('index') }}" class="back-link">← Back to Home</a>
+			<h1 class="page-title">Forecast History</h1>
+			<p class="page-subtitle">All your previous weather forecasts</p>
+		</div>
+	</section>
+
+	<section class="history-content">
+		<div class="section-container">
+			{% if forecasts %}
+			<div class="history-table-container">
+				<table class="history-table">
+					<thead>
+						<tr>
+							<th>Location</th>
+							<th>Country</th>
+							<th>Temperature</th>
+							<th>Condition</th>
+							<th>Days</th>
+							<th>Date</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for forecast in forecasts %}
+						<tr>
+							<td>{{ forecast.location_name }}</td>
+							<td>{{ forecast.country }}</td>
+							<td class="temp-cell">
+								{{ forecast.current_temp|round(1) if forecast.current_temp else
+								'N/A' }}°C
+							</td>
+							<td>{{ forecast.current_condition or 'Unknown' }}</td>
+							<td>{{ forecast.range_days }}</td>
+							<td>{{ forecast.created_at|datetime('%Y-%m-%d %H:%M') }}</td>
+							<td>
+								<a
+									href="{{ url_for('forecast_result', request_id=forecast.request_id) }}"
+									class="btn btn-small"
+								>
+									View
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			{% else %}
+			<div class="empty-state">
+				<div class="empty-icon">📋</div>
+				<h3>No Forecast History</h3>
+				<p>You haven't generated any forecasts yet.</p>
+				<a href="{{ url_for('index') }}#forecast-form" class="btn btn-primary">
+					Create Your First Forecast
+				</a>
+			</div>
+			{% endif %}
+		</div>
+	</section>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+	.history-page {
+		padding-top: 80px;
+		min-height: calc(100vh - 80px);
+	}
+
+	.page-header {
+		padding: 2rem 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		color: #8b5cf6;
+		text-decoration: none;
+		margin-bottom: 1rem;
+	}
+
+	.page-title {
+		font-size: 2rem;
+		color: #e5e7eb;
+		margin-bottom: 0.5rem;
+	}
+
+	.page-subtitle {
+		color: #6b7280;
+	}
+
+	.history-content {
+		padding: 3rem 0;
+	}
+
+	.history-table-container {
+		overflow-x: auto;
+	}
+
+	.history-table {
+		width: 100%;
+		border-collapse: collapse;
+		background: rgba(255, 255, 255, 0.03);
+		border-radius: 1rem;
+		overflow: hidden;
+	}
+
+	.history-table th,
+	.history-table td {
+		padding: 1rem 1.5rem;
+		text-align: left;
+	}
+
+	.history-table th {
+		background: rgba(0, 0, 0, 0.3);
+		color: #9ca3af;
+		font-weight: 500;
+		font-size: 0.85rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.history-table td {
+		color: #e5e7eb;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+	}
+
+	.history-table tr:hover td {
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.temp-cell {
+		font-weight: 600;
+		color: #8b5cf6;
+	}
+
+	.btn-small {
+		padding: 0.5rem 1rem;
+		font-size: 0.85rem;
+	}
+
+	.empty-state {
+		text-align: center;
+		padding: 4rem 2rem;
+	}
+
+	.empty-icon {
+		font-size: 4rem;
+		margin-bottom: 1rem;
+	}
+
+	.empty-state h3 {
+		color: #e5e7eb;
+		margin-bottom: 0.5rem;
+	}
+
+	.empty-state p {
+		color: #6b7280;
+		margin-bottom: 2rem;
+	}
+</style>
+{% endblock %}

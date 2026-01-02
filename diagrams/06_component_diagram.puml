@@ -1,0 +1,44 @@
+
+@startuml ComponentDiagram
+!theme plain
+
+package "Galaxy Weather Application" {
+    
+    package "Frontend (Jinja2 Templates)" {
+        [index.html] as Index
+        [loading.html] as Loading
+        [forecast.html] as Forecast
+        [base.html] as Base
+    }
+    
+    package "Static Assets" {
+        [style.css] as CSS
+        [galaxy.css] as GalaxyCSS
+        [galaxy.js] as GalaxyJS
+    }
+    
+    package "Backend (Flask)" {
+        [app.py] as App
+        [forecast.py] as ForecastModule
+        [models.py] as Models
+    }
+    
+    database "SQLite" as DB
+    
+    cloud "WeatherAPI" as API
+}
+
+Index --> Base
+Loading --> Base
+Forecast --> Base
+
+Index --> CSS
+Index --> GalaxyCSS
+Index --> GalaxyJS
+
+App --> ForecastModule
+App --> Models
+ForecastModule --> API
+Models --> DB
+
+@enduml

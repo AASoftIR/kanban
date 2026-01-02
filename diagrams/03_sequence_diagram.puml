@@ -1,0 +1,80 @@
+
+@startuml SequenceDiagram
+!theme plain
+
+actor User
+participant Browser
+participant "Flask App" as Flask
+participant "WeatherAPI" as API
+participant "ForecastEngine" as Engine
+database "SQLite DB" as DB
+
+User -> Browser: Enter location & days
+activate Browser
+
+Browser -> Flask: POST /forecast
+activate Flask
+
+Flask -> DB: Create WeatherRequest
+activate DB
+DB --> Flask: request_id
+deactivate DB
+
+Flask --> Browser: Redirect to /loading
+deactivate Flask
+
+Browser -> Flask: POST /process/{id}
+activate Flask
+
+Flask -> Engine: generate_forecast(query, days)
+activate Engine
+
+Engine -> API: GET /current.json
+activate API
+API --> Engine: current weather data
+deactivate API
+
+Engine -> API: GET /forecast.json
+activate API
+API --> Engine: forecast data
+deactivate API
+
+Engine -> API: GET /history.json (x7)
+activate API
+API --> Engine: historical data
+deactivate API
+
+Engine -> Engine: analyze_history()
+Engine -> Engine: apply_trend_adjustments()
+
+Engine --> Flask: forecast_result
+deactivate Engine
+
+Flask -> DB: Save ForecastResult
+activate DB
+DB --> Flask: result_id
+deactivate DB
+
+Flask -> DB: Update request status
+activate DB
+DB --> Flask: OK
+deactivate DB
+
+Flask --> Browser: JSON {redirect: /forecast/{id}}
+deactivate Flask
+
+Browser -> Flask: GET /forecast/{id}
+activate Flask
+
+Flask -> DB: Get ForecastResult
+activate DB
+DB --> Flask: result data
+deactivate DB
+
+Flask --> Browser: Render forecast.html
+deactivate Flask
+
+Browser --> User: Display forecast
+deactivate Browser
+
+@enduml

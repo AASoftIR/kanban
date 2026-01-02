@@ -1,0 +1,460 @@
+{% extends 'base.html' %} {% block title %}Galaxy Weather - Intelligent Weather
+Forecasting{% endblock %} {% block extra_css %}
+<!-- Leaflet CSS for Map -->
+<link
+	rel="stylesheet"
+	href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+	integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+	crossorigin=""
+/>
+<style>
+	.map-container {
+		margin-top: 0.5rem;
+	}
+
+	#location-map {
+		height: 300px;
+		width: 100%;
+		border-radius: 0.75rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		z-index: 1;
+	}
+
+	.map-hint {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 0.5rem;
+		font-size: 0.85rem;
+		color: #9ca3af;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.selected-coords {
+		background: rgba(139, 92, 246, 0.2);
+		border: 1px solid rgba(139, 92, 246, 0.3);
+		padding: 0.3rem 0.6rem;
+		border-radius: 0.5rem;
+		color: #8b5cf6;
+		font-family: monospace;
+	}
+
+	.selected-coords:empty {
+		display: none;
+	}
+
+	/* Leaflet customizations for dark theme */
+	.leaflet-control-zoom a {
+		background: rgba(17, 17, 17, 0.9) !important;
+		color: #e5e7eb !important;
+		border-color: rgba(255, 255, 255, 0.1) !important;
+	}
+
+	.leaflet-control-zoom a:hover {
+		background: rgba(139, 92, 246, 0.5) !important;
+	}
+
+	.leaflet-control-attribution {
+		background: rgba(17, 17, 17, 0.7) !important;
+		color: #9ca3af !important;
+	}
+
+	.leaflet-control-attribution a {
+		color: #8b5cf6 !important;
+	}
+
+	.leaflet-popup-content-wrapper {
+		background: rgba(17, 17, 17, 0.95);
+		color: #e5e7eb;
+		border-radius: 0.5rem;
+	}
+
+	.leaflet-popup-tip {
+		background: rgba(17, 17, 17, 0.95);
+	}
+
+	.leaflet-popup-content {
+		margin: 0.75rem;
+	}
+
+	.map-popup {
+		text-align: center;
+	}
+
+	.map-popup-coords {
+		font-family: monospace;
+		color: #8b5cf6;
+		font-size: 0.9rem;
+	}
+
+	.map-popup-btn {
+		margin-top: 0.5rem;
+		padding: 0.4rem 0.8rem;
+		background: #8b5cf6;
+		color: white;
+		border: none;
+		border-radius: 0.3rem;
+		cursor: pointer;
+		font-size: 0.85rem;
+	}
+
+	.map-popup-btn:hover {
+		background: #7c3aed;
+	}
+</style>
+{% endblock %} {% block content %}
+<!-- Hero Section -->
+<section id="hero" class="hero-section">
+	<div class="hero-content">
+		<h1 class="hero-title">
+			<span class="glow-text">Galaxy Weather</span>
+		</h1>
+		<p class="hero-subtitle">Intelligent Weather Forecasting</p>
+		<p class="hero-description">
+			Experience weather forecasting reimagined. Powered by advanced analytics,
+			real-time API data, and trend-based predictions.
+		</p>
+		<div class="hero-buttons">
+			<a href="#forecast-form" class="btn btn-primary">Get Forecast</a>
+			<a href="#about" class="btn btn-secondary">Learn More</a>
+		</div>
+	</div>
+	<div class="hero-visual">
+		<div class="weather-orb">
+			<div class="orb-ring ring-1"></div>
+			<div class="orb-ring ring-2"></div>
+			<div class="orb-ring ring-3"></div>
+			<div class="orb-core">☀️</div>
+		</div>
+	</div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about-section">
+	<div class="section-container">
+		<h2 class="section-title">About Galaxy Weather</h2>
+		<div class="about-grid">
+			<div class="about-card">
+				<div class="card-icon">🌍</div>
+				<h3>Global Coverage</h3>
+				<p>
+					Access weather data for any location worldwide using city names,
+					coordinates, IP addresses, or postal codes.
+				</p>
+			</div>
+			<div class="about-card">
+				<div class="card-icon">📊</div>
+				<h3>Smart Analysis</h3>
+				<p>
+					Our forecasting engine uses moving averages and linear trends to
+					provide accurate predictions.
+				</p>
+			</div>
+			<div class="about-card">
+				<div class="card-icon">📁</div>
+				<h3>Custom Data</h3>
+				<p>
+					Upload your own JSON weather data for personalized analysis and
+					forecasting.
+				</p>
+			</div>
+			<div class="about-card">
+				<div class="card-icon">📜</div>
+				<h3>Forecast History</h3>
+				<p>
+					All your forecasts are saved and accessible anytime. Track weather
+					patterns over time.
+				</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Forecast Form Section -->
+<section id="forecast-form" class="forecast-section">
+	<div class="section-container">
+		<h2 class="section-title">Get Your Forecast</h2>
+		<div class="forecast-form-container">
+			<form
+				action="{{ url_for('create_forecast') }}"
+				method="POST"
+				enctype="multipart/form-data"
+				class="forecast-form"
+			>
+				<div class="form-group">
+					<label for="location">
+						<span class="label-icon">📍</span>
+						Location
+					</label>
+					<input
+						type="text"
+						id="location"
+						name="location"
+						placeholder="City, coordinates (lat,lon), IP address, or postal code"
+						class="form-input"
+					/>
+					<div class="input-hint">
+						Examples: London, 40.7128,-74.0060, 192.168.1.1, 10001
+					</div>
+				</div>
+
+				<!-- Interactive Map -->
+				<div class="form-group">
+					<label>
+						<span class="label-icon">🗺️</span>
+						Or Select from Map
+					</label>
+					<div class="map-container">
+						<div id="location-map"></div>
+						<div class="map-hint">
+							<span>👆 Click anywhere on the map to select a location</span>
+							<span id="selected-coords" class="selected-coords"></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="days">
+						<span class="label-icon">📅</span>
+						Forecast Days: <span id="days-value">7</span>
+					</label>
+					<input
+						type="range"
+						id="days"
+						name="days"
+						min="1"
+						max="10"
+						value="7"
+						class="form-slider"
+						oninput="document.getElementById('days-value').textContent = this.value"
+					/>
+					<div class="slider-labels">
+						<span>1 day</span>
+						<span>10 days</span>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="json_file">
+						<span class="label-icon">📁</span>
+						Or Upload JSON Data (Optional)
+					</label>
+					<div class="file-upload-wrapper">
+						<input
+							type="file"
+							id="json_file"
+							name="json_file"
+							accept=".json"
+							class="form-file"
+						/>
+						<div class="file-upload-label">
+							<span class="upload-icon">⬆️</span>
+							<span class="upload-text">Choose JSON file or drag & drop</span>
+						</div>
+					</div>
+				</div>
+
+				<button type="submit" class="btn btn-primary btn-large">
+					<span class="btn-icon">🔮</span>
+					Generate Forecast
+				</button>
+			</form>
+		</div>
+	</div>
+</section>
+
+<!-- Forecast History Section -->
+<section id="history" class="history-section">
+	<div class="section-container">
+		<h2 class="section-title">Forecast History</h2>
+		{% if forecasts %}
+		<div class="history-grid">
+			{% for forecast in forecasts %}
+			<a
+				href="{{ url_for('forecast_result', request_id=forecast.request_id) }}"
+				class="history-card"
+			>
+				<div class="history-header">
+					<span class="history-location">{{ forecast.location_name }}</span>
+					<span class="history-country">{{ forecast.country }}</span>
+				</div>
+				<div class="history-body">
+					<div class="history-temp">
+						{{ forecast.current_temp|round(1) if forecast.current_temp else
+						'N/A' }}°C
+					</div>
+					<div class="history-condition">
+						{{ forecast.current_condition or 'Unknown' }}
+					</div>
+				</div>
+				<div class="history-footer">
+					<span class="history-date"
+						>{{ forecast.created_at|datetime('%b %d, %Y') }}</span
+					>
+					<span class="history-arrow">→</span>
+				</div>
+			</a>
+			{% endfor %}
+		</div>
+		{% else %}
+		<div class="empty-state">
+			<div class="empty-icon">🌤️</div>
+			<p>No forecasts yet. Generate your first forecast above!</p>
+		</div>
+		{% endif %}
+	</div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+	<div class="section-container">
+		<h2 class="section-title">Contact Us</h2>
+		<div class="contact-content">
+			<div class="contact-info">
+				<div class="contact-item">
+					<span class="contact-icon">📧</span>
+					<span>EMAIL</span>
+				</div>
+				<div class="contact-item">
+					<span class="contact-icon">🎓</span>
+					<span>Academic Project - 2026</span>
+					<span>By Asal & Sadaf </span>
+				</div>
+			</div>
+			<div class="contact-note">
+				<p>
+					Galaxy Weather is an academic project demonstrating modern web
+					application development with Flask, API integration, and data
+					visualization.
+				</p>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %} {% block extra_js %}
+<!-- Leaflet JS for Map -->
+<script
+	src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+	integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+	crossorigin=""
+></script>
+<script>
+	// File upload visual feedback
+	const fileInput = document.getElementById("json_file");
+	const uploadText = document.querySelector(".upload-text");
+
+	if (fileInput) {
+		fileInput.addEventListener("change", function () {
+			if (this.files.length > 0) {
+				uploadText.textContent = this.files[0].name;
+			} else {
+				uploadText.textContent = "Choose JSON file or drag & drop";
+			}
+		});
+	}
+
+	// Initialize Leaflet Map
+	document.addEventListener("DOMContentLoaded", function () {
+		// Create map centered on world view
+		const map = L.map("location-map", {
+			center: [20, 0],
+			zoom: 2,
+			minZoom: 2,
+			maxZoom: 18,
+			worldCopyJump: true,
+		});
+
+		// Add dark-themed tile layer (CartoDB Dark Matter)
+		L.tileLayer(
+			"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+			{
+				attribution:
+					'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+				subdomains: "abcd",
+				maxZoom: 20,
+			}
+		).addTo(map);
+
+		// Marker for selected location
+		let marker = null;
+		const locationInput = document.getElementById("location");
+		const selectedCoordsDisplay = document.getElementById("selected-coords");
+
+		// Click handler for map
+		map.on("click", function (e) {
+			const lat = e.latlng.lat.toFixed(4);
+			const lng = e.latlng.lng.toFixed(4);
+			const coords = `${lat},${lng}`;
+
+			// Update or create marker
+			if (marker) {
+				marker.setLatLng(e.latlng);
+			} else {
+				marker = L.marker(e.latlng, {
+					icon: L.divIcon({
+						className: "custom-marker",
+						html: '<div style="background: #8b5cf6; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 10px rgba(139,92,246,0.5);"></div>',
+						iconSize: [20, 20],
+						iconAnchor: [10, 10],
+					}),
+				}).addTo(map);
+			}
+
+			// Create popup with use button
+			const popupContent = `
+				<div class="map-popup">
+					<div class="map-popup-coords">${lat}, ${lng}</div>
+					<button class="map-popup-btn" onclick="useMapLocation('${coords}')">
+						📍 Use this location
+					</button>
+				</div>
+			`;
+
+			marker.bindPopup(popupContent).openPopup();
+
+			// Update display
+			selectedCoordsDisplay.textContent = `📍 ${coords}`;
+		});
+
+		// Try to get user's location
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				function (position) {
+					const userLat = position.coords.latitude;
+					const userLng = position.coords.longitude;
+					map.setView([userLat, userLng], 8);
+
+					// Add a subtle circle to show user's approximate location
+					L.circle([userLat, userLng], {
+						color: "#8b5cf6",
+						fillColor: "#8b5cf6",
+						fillOpacity: 0.1,
+						radius: 50000,
+						weight: 1,
+					}).addTo(map);
+				},
+				function (error) {
+					console.log("Geolocation not available or denied");
+				},
+				{ timeout: 5000, enableHighAccuracy: false }
+			);
+		}
+	});
+
+	// Function to use selected map location
+	function useMapLocation(coords) {
+		const locationInput = document.getElementById("location");
+		locationInput.value = coords;
+		locationInput.focus();
+
+		// Visual feedback
+		locationInput.style.borderColor = "#8b5cf6";
+		locationInput.style.boxShadow = "0 0 10px rgba(139, 92, 246, 0.3)";
+		setTimeout(() => {
+			locationInput.style.borderColor = "";
+			locationInput.style.boxShadow = "";
+		}, 2000);
+	}
+</script>
+{% endblock %}

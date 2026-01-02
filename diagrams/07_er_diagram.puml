@@ -1,0 +1,45 @@
+
+@startuml ERDiagram
+!theme plain
+
+entity "weather_request" as WR {
+    * id : INTEGER <<PK>>
+    --
+    * query : TEXT
+    * query_type : TEXT
+    * range_days : INTEGER
+    * created_at : TIMESTAMP
+    * status : TEXT
+}
+
+entity "forecast_result" as FR {
+    * id : INTEGER <<PK>>
+    --
+    * request_id : INTEGER <<FK>>
+    location_name : TEXT
+    country : TEXT
+    latitude : REAL
+    longitude : REAL
+    forecast_data : TEXT
+    current_temp : REAL
+    current_humidity : REAL
+    current_condition : TEXT
+    * created_at : TIMESTAMP
+}
+
+entity "historical_cache" as HC {
+    * id : INTEGER <<PK>>
+    --
+    * location_query : TEXT
+    * date : TEXT
+    avg_temp : REAL
+    max_temp : REAL
+    min_temp : REAL
+    humidity : REAL
+    condition : TEXT
+    * cached_at : TIMESTAMP
+}
+
+WR ||--o{ FR : "has"
+
+@enduml

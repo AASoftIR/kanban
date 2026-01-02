@@ -1,0 +1,21 @@
+// Galaxy Weather Use Case Diagram
+digraph UseCase {
+	bgcolor=white rankdir=LR
+	node [fillcolor=lightblue shape=ellipse style=filled]
+	user [label=User fillcolor=lightyellow shape=box]
+	subgraph cluster_system {
+		label="Galaxy Weather System" style=dashed
+		uc1 [label="Enter Location"]
+		uc2 [label="Upload JSON Data"]
+		uc3 [label="Request Forecast"]
+		uc4 [label="View Forecast Result"]
+		uc5 [label="View Forecast History"]
+	}
+	user -> uc1
+	user -> uc2
+	user -> uc3
+	user -> uc4
+	user -> uc5
+	uc3 -> uc1 [label=<<include>> style=dashed]
+	uc3 -> uc4 [label=<<include>> style=dashed]
+}

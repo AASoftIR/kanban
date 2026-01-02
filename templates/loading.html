@@ -1,0 +1,348 @@
+{% extends 'base.html' %} {% block title %}Processing Forecast - Galaxy
+Weather{% endblock %} {% block extra_css %}
+<style>
+	.loading-page {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+	}
+
+	.loading-container {
+		text-align: center;
+		max-width: 500px;
+	}
+
+	.loading-title {
+		font-size: 2rem;
+		font-weight: 600;
+		color: #e5e7eb;
+		margin-bottom: 1rem;
+	}
+
+	.loading-subtitle {
+		color: #9ca3af;
+		margin-bottom: 3rem;
+	}
+
+	/* Main Loader */
+	.galaxy-loader {
+		position: relative;
+		width: 200px;
+		height: 200px;
+		margin: 0 auto 3rem;
+	}
+
+	.loader-orbit {
+		position: absolute;
+		border-radius: 50%;
+		border: 2px solid transparent;
+		animation: orbit linear infinite;
+	}
+
+	.orbit-1 {
+		width: 100%;
+		height: 100%;
+		border-top-color: #8b5cf6;
+		border-right-color: #8b5cf6;
+		animation-duration: 3s;
+	}
+
+	.orbit-2 {
+		width: 75%;
+		height: 75%;
+		top: 12.5%;
+		left: 12.5%;
+		border-bottom-color: #06b6d4;
+		border-left-color: #06b6d4;
+		animation-duration: 2s;
+		animation-direction: reverse;
+	}
+
+	.orbit-3 {
+		width: 50%;
+		height: 50%;
+		top: 25%;
+		left: 25%;
+		border-top-color: #f59e0b;
+		border-right-color: #f59e0b;
+		animation-duration: 1.5s;
+	}
+
+	.loader-core {
+		position: absolute;
+		width: 60px;
+		height: 60px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.5rem;
+		animation: pulse 2s ease-in-out infinite;
+		box-shadow: 0 0 30px rgba(139, 92, 246, 0.5),
+			0 0 60px rgba(6, 182, 212, 0.3);
+	}
+
+	.loader-planet {
+		position: absolute;
+		width: 12px;
+		height: 12px;
+		background: #f59e0b;
+		border-radius: 50%;
+		animation: planet-orbit 3s linear infinite;
+		box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+	}
+
+	.planet-1 {
+		animation-duration: 3s;
+	}
+
+	.planet-2 {
+		animation-duration: 2s;
+		animation-direction: reverse;
+		background: #8b5cf6;
+		box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
+	}
+
+	@keyframes orbit {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes planet-orbit {
+		from {
+			transform: rotate(0deg) translateX(100px) rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg) translateX(100px) rotate(-360deg);
+		}
+	}
+
+	@keyframes pulse {
+		0%,
+		100% {
+			transform: translate(-50%, -50%) scale(1);
+		}
+		50% {
+			transform: translate(-50%, -50%) scale(1.1);
+		}
+	}
+
+	/* Progress Steps */
+	.loading-steps {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		text-align: left;
+		padding: 0 2rem;
+	}
+
+	.loading-step {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1rem;
+		background: rgba(255, 255, 255, 0.03);
+		border-radius: 0.5rem;
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		transition: all 0.3s ease;
+	}
+
+	.loading-step.active {
+		background: rgba(139, 92, 246, 0.1);
+		border-color: rgba(139, 92, 246, 0.3);
+	}
+
+	.loading-step.completed {
+		background: rgba(16, 185, 129, 0.1);
+		border-color: rgba(16, 185, 129, 0.3);
+	}
+
+	.step-icon {
+		width: 32px;
+		height: 32px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.05);
+		border-radius: 50%;
+		font-size: 1rem;
+	}
+
+	.loading-step.active .step-icon {
+		animation: spin 1s linear infinite;
+	}
+
+	.loading-step.completed .step-icon {
+		background: rgba(16, 185, 129, 0.2);
+	}
+
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.step-text {
+		color: #9ca3af;
+	}
+
+	.loading-step.active .step-text {
+		color: #e5e7eb;
+	}
+
+	.loading-step.completed .step-text {
+		color: #10b981;
+	}
+
+	/* Error State */
+	.error-container {
+		text-align: center;
+		padding: 2rem;
+	}
+
+	.error-icon {
+		font-size: 4rem;
+		margin-bottom: 1rem;
+	}
+
+	.error-message {
+		color: #f87171;
+		margin-bottom: 2rem;
+	}
+</style>
+{% endblock %} {% block content %}
+<div class="loading-page">
+	<div class="loading-container" id="loading-content">
+		<h1 class="loading-title">Generating Forecast</h1>
+		<p class="loading-subtitle">Please wait while we analyze weather data...</p>
+
+		<div class="galaxy-loader">
+			<div class="loader-orbit orbit-1"></div>
+			<div class="loader-orbit orbit-2"></div>
+			<div class="loader-orbit orbit-3"></div>
+			<div class="loader-core">🌌</div>
+			<div class="loader-planet planet-1"></div>
+			<div class="loader-planet planet-2"></div>
+		</div>
+
+		<div class="loading-steps">
+			<div class="loading-step active" id="step-1">
+				<div class="step-icon">🔄</div>
+				<span class="step-text">Connecting to weather services...</span>
+			</div>
+			<div class="loading-step" id="step-2">
+				<div class="step-icon">📡</div>
+				<span class="step-text">Fetching current weather data...</span>
+			</div>
+			<div class="loading-step" id="step-3">
+				<div class="step-icon">📊</div>
+				<span class="step-text">Analyzing historical trends...</span>
+			</div>
+			<div class="loading-step" id="step-4">
+				<div class="step-icon">🔮</div>
+				<span class="step-text">Generating forecast predictions...</span>
+			</div>
+			<div class="loading-step" id="step-5">
+				<div class="step-icon">💾</div>
+				<span class="step-text">Saving results...</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="error-container" id="error-content" style="display: none">
+		<div class="error-icon">⚠️</div>
+		<h2 class="loading-title">Forecast Failed</h2>
+		<p class="error-message" id="error-message">
+			An error occurred while generating the forecast.
+		</p>
+		<a href="{{ url_for('index') }}" class="btn btn-primary">Try Again</a>
+	</div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+	const requestId = {{ request_id }};
+	const hasJson = {{ 'true' if has_json else 'false' }};
+
+	// Step progression simulation
+	const steps = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5'];
+	let currentStep = 0;
+
+	function activateStep(index) {
+	    steps.forEach((stepId, i) => {
+	        const step = document.getElementById(stepId);
+	        if (i < index) {
+	            step.classList.remove('active');
+	            step.classList.add('completed');
+	            step.querySelector('.step-icon').textContent = '✓';
+	        } else if (i === index) {
+	            step.classList.add('active');
+	            step.classList.remove('completed');
+	        } else {
+	            step.classList.remove('active', 'completed');
+	        }
+	    });
+	}
+
+	// Progress through steps
+	const stepInterval = setInterval(() => {
+	    currentStep++;
+	    if (currentStep < steps.length) {
+	        activateStep(currentStep);
+	    }
+	}, 1500);
+
+	// Start forecast processing
+	async function processForecast() {
+	    try {
+	        const response = await fetch(`/process/${requestId}`, {
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/json'
+	            },
+	            body: JSON.stringify({ json_data: null })
+	        });
+
+	        const data = await response.json();
+
+	        clearInterval(stepInterval);
+
+	        if (data.success && data.redirect) {
+	            // Complete all steps
+	            activateStep(steps.length);
+
+	            // Redirect after brief delay
+	            setTimeout(() => {
+	                window.location.href = data.redirect;
+	            }, 1000);
+	        } else {
+	            showError(data.error || 'Unknown error occurred');
+	        }
+	    } catch (error) {
+	        clearInterval(stepInterval);
+	        showError('Failed to connect to server: ' + error.message);
+	    }
+	}
+
+	function showError(message) {
+	    document.getElementById('loading-content').style.display = 'none';
+	    document.getElementById('error-content').style.display = 'block';
+	    document.getElementById('error-message').textContent = message;
+	}
+
+	// Start processing after a brief delay
+	setTimeout(processForecast, 500);
+</script>
+{% endblock %}

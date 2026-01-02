@@ -1,0 +1,25 @@
+@startuml ActivityDiagram
+!theme plain
+
+start
+
+:User Enters Location
+or Uploads JSON;
+
+:Validate Input;
+
+if (Valid?) then (yes)
+    :Fetch Current Weather;
+    :Fetch Historical Data;
+    :Analyze Trends;
+    :Generate Forecast;
+    :Store Results in DB;
+    :Display Forecast;
+    stop
+else (no)
+    :Show Error Message;
+    :Return to Input;
+    stop
+endif
+
+@enduml

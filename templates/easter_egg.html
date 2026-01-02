@@ -1,0 +1,1069 @@
+{% extends 'base.html' %} {% block title %}🥚 Cosmos Portal - Galaxy Weather
+Secret{% endblock %} {% block extra_css %}
+<link
+	rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+/>
+<style>
+	.easter-egg-page {
+		padding-top: 100px;
+		min-height: 100vh;
+	}
+
+	.portal-header {
+		text-align: center;
+		padding: 3rem 2rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.portal-title {
+		font-size: 3rem;
+		background: linear-gradient(135deg, #f59e0b, #ec4899, #8b5cf6, #06b6d4);
+		background-size: 300% 300%;
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		animation: rainbow-shift 5s ease infinite;
+		margin-bottom: 0.5rem;
+	}
+
+	@keyframes rainbow-shift {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	.portal-subtitle {
+		color: #6b7280;
+		font-size: 1.1rem;
+	}
+
+	.secret-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		background: rgba(245, 158, 11, 0.2);
+		border: 1px solid rgba(245, 158, 11, 0.3);
+		color: #f59e0b;
+		padding: 0.5rem 1rem;
+		border-radius: 2rem;
+		font-size: 0.85rem;
+		margin-top: 1rem;
+	}
+
+	/* Stats Section */
+	.stats-section {
+		padding: 2rem;
+		background: rgba(0, 0, 0, 0.3);
+	}
+
+	.stats-grid {
+		display: flex;
+		justify-content: center;
+		gap: 2rem;
+		flex-wrap: wrap;
+		max-width: 800px;
+		margin: 0 auto;
+	}
+
+	.stat-item {
+		text-align: center;
+		padding: 1rem 2rem;
+		background: rgba(255, 255, 255, 0.03);
+		border-radius: 0.5rem;
+		border: 1px solid rgba(255, 255, 255, 0.05);
+	}
+
+	.stat-value {
+		font-size: 2rem;
+		font-weight: 700;
+		color: #8b5cf6;
+	}
+
+	.stat-label {
+		color: #6b7280;
+		font-size: 0.85rem;
+	}
+
+	/* Navigation Tabs */
+	.portal-nav {
+		display: flex;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 1.5rem;
+		flex-wrap: wrap;
+		background: rgba(0, 0, 0, 0.2);
+		position: sticky;
+		top: 60px;
+		z-index: 100;
+	}
+
+	.portal-tab {
+		padding: 0.75rem 1.5rem;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 0.5rem;
+		color: #9ca3af;
+		cursor: pointer;
+		transition: all 0.3s;
+	}
+
+	.portal-tab:hover {
+		background: rgba(255, 255, 255, 0.1);
+		color: #e5e7eb;
+	}
+
+	.portal-tab.active {
+		background: rgba(139, 92, 246, 0.2);
+		border-color: #8b5cf6;
+		color: #8b5cf6;
+	}
+
+	/* Content Sections */
+	.portal-section {
+		display: none;
+		padding: 2rem;
+		max-width: 1400px;
+		margin: 0 auto;
+	}
+
+	.portal-section.active {
+		display: block;
+	}
+
+	.section-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2rem;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+
+	.section-title {
+		font-size: 1.5rem;
+		color: #e5e7eb;
+	}
+
+	/* UML Diagram Cards */
+	.uml-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.uml-card {
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 1rem;
+		overflow: hidden;
+	}
+
+	.uml-card-header {
+		padding: 1rem 1.5rem;
+		background: rgba(0, 0, 0, 0.3);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.uml-card-title {
+		color: #e5e7eb;
+		font-weight: 500;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.uml-card-actions {
+		display: flex;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	.uml-card-body {
+		padding: 1rem;
+		min-height: 300px;
+		max-height: 600px;
+		overflow: auto;
+		background: #1a1a2e;
+	}
+
+	.uml-image-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: 280px;
+		background: #fff;
+		border-radius: 0.5rem;
+		padding: 1rem;
+	}
+
+	.uml-image-container img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	.uml-loading {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		color: #6b7280;
+	}
+
+	.uml-loading-spinner {
+		width: 40px;
+		height: 40px;
+		border: 3px solid #333;
+		border-top-color: #8b5cf6;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.uml-error {
+		color: #ef4444;
+		text-align: center;
+		padding: 2rem;
+	}
+
+	.view-toggle {
+		display: flex;
+		gap: 0.25rem;
+		background: rgba(0, 0, 0, 0.3);
+		border-radius: 0.5rem;
+		padding: 0.25rem;
+	}
+
+	.view-toggle-btn {
+		padding: 0.4rem 0.8rem;
+		border: none;
+		background: transparent;
+		color: #9ca3af;
+		cursor: pointer;
+		border-radius: 0.3rem;
+		font-size: 0.8rem;
+		transition: all 0.2s;
+	}
+
+	.view-toggle-btn.active {
+		background: #8b5cf6;
+		color: white;
+	}
+
+	.view-toggle-btn:hover:not(.active) {
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.uml-code-view {
+		display: none;
+	}
+
+	.uml-code-view.active {
+		display: block;
+	}
+
+	.uml-visual-view {
+		display: block;
+	}
+
+	.uml-visual-view.hidden {
+		display: none;
+	}
+
+	.uml-card pre {
+		margin: 0;
+		padding: 1rem;
+		background: rgba(0, 0, 0, 0.4);
+		border-radius: 0.5rem;
+		overflow-x: auto;
+		font-size: 0.85rem;
+		line-height: 1.5;
+	}
+
+	.uml-card code {
+		color: #e5e7eb;
+		font-family: "Fira Code", "Monaco", monospace;
+	}
+
+	/* PlantUML Preview */
+	.uml-preview {
+		background: white;
+		border-radius: 0.5rem;
+		padding: 1rem;
+		margin-bottom: 1rem;
+		text-align: center;
+	}
+
+	.uml-preview img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	/* Markdown Content */
+	.markdown-container {
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 1rem;
+		overflow: hidden;
+	}
+
+	.markdown-header {
+		padding: 1rem 1.5rem;
+		background: rgba(0, 0, 0, 0.3);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.markdown-title {
+		color: #e5e7eb;
+		font-weight: 500;
+		font-size: 1.2rem;
+	}
+
+	.markdown-content {
+		padding: 2rem;
+		max-height: 70vh;
+		overflow-y: auto;
+		color: #d1d5db;
+		line-height: 1.8;
+	}
+
+	.markdown-content h1 {
+		color: #8b5cf6;
+		font-size: 2rem;
+		margin-top: 0;
+		margin-bottom: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+	}
+
+	.markdown-content h2 {
+		color: #06b6d4;
+		font-size: 1.5rem;
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+	}
+
+	.markdown-content h3 {
+		color: #f59e0b;
+		font-size: 1.2rem;
+		margin-top: 1.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.markdown-content h4 {
+		color: #ec4899;
+		font-size: 1.1rem;
+		margin-top: 1rem;
+	}
+
+	.markdown-content code {
+		background: rgba(0, 0, 0, 0.4);
+		padding: 0.2rem 0.4rem;
+		border-radius: 0.25rem;
+		font-size: 0.9em;
+		color: #f59e0b;
+	}
+
+	.markdown-content pre {
+		background: rgba(0, 0, 0, 0.5);
+		padding: 1rem;
+		border-radius: 0.5rem;
+		overflow-x: auto;
+		margin: 1rem 0;
+	}
+
+	.markdown-content pre code {
+		background: none;
+		padding: 0;
+		color: #e5e7eb;
+	}
+
+	.markdown-content table {
+		width: 100%;
+		border-collapse: collapse;
+		margin: 1rem 0;
+	}
+
+	.markdown-content th,
+	.markdown-content td {
+		padding: 0.75rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		text-align: left;
+	}
+
+	.markdown-content th {
+		background: rgba(139, 92, 246, 0.2);
+		color: #e5e7eb;
+	}
+
+	.markdown-content ul,
+	.markdown-content ol {
+		margin: 1rem 0;
+		padding-left: 2rem;
+	}
+
+	.markdown-content li {
+		margin: 0.5rem 0;
+	}
+
+	.markdown-content blockquote {
+		border-left: 4px solid #8b5cf6;
+		margin: 1rem 0;
+		padding: 0.5rem 1rem;
+		background: rgba(139, 92, 246, 0.1);
+		color: #9ca3af;
+	}
+
+	.markdown-content hr {
+		border: none;
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		margin: 2rem 0;
+	}
+
+	.markdown-content a {
+		color: #8b5cf6;
+		text-decoration: underline;
+	}
+
+	/* Doc Tabs */
+	.doc-tabs {
+		display: flex;
+		gap: 0.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.doc-tab {
+		padding: 0.5rem 1rem;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 0.5rem;
+		color: #9ca3af;
+		cursor: pointer;
+		transition: all 0.3s;
+	}
+
+	.doc-tab:hover {
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.doc-tab.active {
+		background: rgba(139, 92, 246, 0.2);
+		border-color: #8b5cf6;
+		color: #8b5cf6;
+	}
+
+	/* Action Buttons */
+	.btn-small {
+		padding: 0.4rem 0.8rem;
+		font-size: 0.8rem;
+		border-radius: 0.3rem;
+	}
+
+	.btn-outline {
+		background: transparent;
+		border: 1px solid rgba(139, 92, 246, 0.5);
+		color: #8b5cf6;
+	}
+
+	.btn-outline:hover {
+		background: rgba(139, 92, 246, 0.2);
+	}
+
+	/* Quick Links */
+	.quick-links {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 1rem;
+		margin-top: 2rem;
+	}
+
+	.quick-link {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1.5rem;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 0.75rem;
+		transition: all 0.3s;
+	}
+
+	.quick-link:hover {
+		background: rgba(255, 255, 255, 0.05);
+		transform: translateY(-3px);
+		border-color: rgba(139, 92, 246, 0.3);
+	}
+
+	.quick-link-icon {
+		font-size: 2rem;
+	}
+
+	.quick-link-text h4 {
+		color: #e5e7eb;
+		margin-bottom: 0.25rem;
+	}
+
+	.quick-link-text p {
+		color: #6b7280;
+		font-size: 0.85rem;
+	}
+
+	/* PlantUML Server Link */
+	.plantuml-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: rgba(16, 185, 129, 0.2);
+		border: 1px solid rgba(16, 185, 129, 0.3);
+		border-radius: 0.5rem;
+		color: #10b981;
+		font-size: 0.85rem;
+		transition: all 0.3s;
+	}
+
+	.plantuml-link:hover {
+		background: rgba(16, 185, 129, 0.3);
+	}
+
+	/* Copy Button */
+	.copy-btn {
+		background: rgba(255, 255, 255, 0.1);
+		border: none;
+		padding: 0.4rem 0.8rem;
+		border-radius: 0.3rem;
+		color: #9ca3af;
+		cursor: pointer;
+		font-size: 0.8rem;
+		transition: all 0.3s;
+	}
+
+	.copy-btn:hover {
+		background: rgba(255, 255, 255, 0.2);
+		color: #e5e7eb;
+	}
+
+	.copy-btn.copied {
+		background: rgba(16, 185, 129, 0.3);
+		color: #10b981;
+	}
+
+	/* Hint Text */
+	.hint-text {
+		background: rgba(245, 158, 11, 0.1);
+		border: 1px solid rgba(245, 158, 11, 0.2);
+		border-radius: 0.5rem;
+		padding: 1rem;
+		margin-bottom: 1.5rem;
+		color: #f59e0b;
+		font-size: 0.9rem;
+	}
+
+	.hint-text a {
+		color: #f59e0b;
+		text-decoration: underline;
+	}
+
+	/* Responsive */
+	@media (max-width: 768px) {
+		.portal-title {
+			font-size: 2rem;
+		}
+
+		.uml-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.portal-nav {
+			padding: 1rem;
+		}
+
+		.portal-tab {
+			padding: 0.5rem 1rem;
+			font-size: 0.85rem;
+		}
+	}
+</style>
+{% endblock %} {% block content %}
+<div class="easter-egg-page">
+	<!-- Header -->
+	<div class="portal-header">
+		<h1 class="portal-title">🌌 Cosmos Portal</h1>
+		<p class="portal-subtitle">You found the secret documentation hub!</p>
+		<div class="secret-badge">
+			<span>🥚</span>
+			<span>Easter Egg Unlocked</span>
+		</div>
+	</div>
+
+	<!-- Stats -->
+	<div class="stats-section">
+		<div class="stats-grid">
+			<div class="stat-item">
+				<div class="stat-value">{{ stats.total_forecasts }}</div>
+				<div class="stat-label">Total Forecasts</div>
+			</div>
+			<div class="stat-item">
+				<div class="stat-value">{{ stats.python_files }}</div>
+				<div class="stat-label">Python Files</div>
+			</div>
+			<div class="stat-item">
+				<div class="stat-value">{{ stats.templates }}</div>
+				<div class="stat-label">HTML Templates</div>
+			</div>
+			<div class="stat-item">
+				<div class="stat-value">{{ stats.uml_diagrams }}</div>
+				<div class="stat-label">UML Diagrams</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Navigation -->
+	<nav class="portal-nav">
+		<button class="portal-tab active" data-section="overview">
+			📋 Overview
+		</button>
+		<button class="portal-tab" data-section="uml">📐 UML Diagrams</button>
+		<button class="portal-tab" data-section="readme">📖 README</button>
+		<button class="portal-tab" data-section="report">📝 Final Report</button>
+		<button class="portal-tab" data-section="kanban">📊 Kanban Guide</button>
+	</nav>
+
+	<!-- Overview Section -->
+	<section class="portal-section active" id="section-overview">
+		<div class="section-header">
+			<h2 class="section-title">🎯 Project Overview</h2>
+		</div>
+
+		<div class="hint-text">
+			💡 <strong>Pro Tip:</strong> Use
+			<a href="https://www.plantuml.com/plantuml/uml/" target="_blank"
+				>PlantUML Online Server</a
+			>
+			to render the UML diagrams visually. Just paste the code!
+		</div>
+
+		<div class="quick-links">
+			<a href="#" class="quick-link" onclick="switchTab('uml'); return false;">
+				<span class="quick-link-icon">📐</span>
+				<div class="quick-link-text">
+					<h4>UML Diagrams</h4>
+					<p>View all {{ stats.uml_diagrams }} diagrams in PlantUML format</p>
+				</div>
+			</a>
+			<a
+				href="#"
+				class="quick-link"
+				onclick="switchTab('readme'); return false;"
+			>
+				<span class="quick-link-icon">📖</span>
+				<div class="quick-link-text">
+					<h4>README</h4>
+					<p>Project setup and documentation</p>
+				</div>
+			</a>
+			<a
+				href="#"
+				class="quick-link"
+				onclick="switchTab('report'); return false;"
+			>
+				<span class="quick-link-icon">📝</span>
+				<div class="quick-link-text">
+					<h4>Final Report</h4>
+					<p>Complete academic documentation</p>
+				</div>
+			</a>
+			<a
+				href="#"
+				class="quick-link"
+				onclick="switchTab('kanban'); return false;"
+			>
+				<span class="quick-link-icon">📊</span>
+				<div class="quick-link-text">
+					<h4>Kanban Guide</h4>
+					<p>Project management with Trello</p>
+				</div>
+			</a>
+			<a
+				href="https://www.plantuml.com/plantuml/uml/"
+				target="_blank"
+				class="quick-link"
+			>
+				<span class="quick-link-icon">🌐</span>
+				<div class="quick-link-text">
+					<h4>PlantUML Server</h4>
+					<p>Render UML diagrams online</p>
+				</div>
+			</a>
+			<a href="{{ url_for('index') }}" class="quick-link">
+				<span class="quick-link-icon">🏠</span>
+				<div class="quick-link-text">
+					<h4>Back to App</h4>
+					<p>Return to Galaxy Weather</p>
+				</div>
+			</a>
+		</div>
+
+		<div style="margin-top: 3rem; text-align: center">
+			<h3 style="color: #9ca3af; margin-bottom: 1rem">
+				🔗 Direct Download Links
+			</h3>
+			<div
+				style="
+					display: flex;
+					gap: 1rem;
+					justify-content: center;
+					flex-wrap: wrap;
+				"
+			>
+				<a
+					href="{{ url_for('download_file', file_type='doc', file_name='readme') }}"
+					class="btn btn-outline btn-small"
+				>
+					📥 Download README.md
+				</a>
+				<a
+					href="{{ url_for('download_file', file_type='doc', file_name='final_report') }}"
+					class="btn btn-outline btn-small"
+				>
+					📥 Download FINAL_REPORT.md
+				</a>
+				<a
+					href="{{ url_for('download_file', file_type='doc', file_name='kanban_guide') }}"
+					class="btn btn-outline btn-small"
+				>
+					📥 Download KANBAN_GUIDE.md
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- UML Diagrams Section -->
+	<section class="portal-section" id="section-uml">
+		<div class="section-header">
+			<h2 class="section-title">📐 UML Diagrams (Visual)</h2>
+		</div>
+
+		<div class="hint-text">
+			💡 <strong>Visual Diagrams:</strong> All diagrams are rendered
+			automatically using PlantUML server. Toggle between visual and code view
+			using the buttons. Click on any image to view full size.
+		</div>
+
+		<div class="uml-grid">
+			{% for name, content in uml_diagrams.items() %}
+			<div class="uml-card" data-diagram="{{ name }}">
+				<div class="uml-card-header">
+					<span class="uml-card-title">
+						{% if 'use_case' in name %}📋{% elif 'class' in name %}🏗️{% elif
+						'sequence' in name %}🔄{% elif 'activity' in name %}🎯{% elif
+						'state' in name %}🔀{% elif 'component' in name %}📦{% elif 'er' in
+						name %}🗄️{% else %}📐{% endif %} {{ name.replace('_', ' ').title()
+						}}
+					</span>
+					<div class="uml-card-actions">
+						<div class="view-toggle">
+							<button
+								class="view-toggle-btn active"
+								onclick="showVisual('{{ name }}')"
+							>
+								🖼️ Visual
+							</button>
+							<button class="view-toggle-btn" onclick="showCode('{{ name }}')">
+								📝 Code
+							</button>
+						</div>
+						<button
+							class="copy-btn"
+							onclick="copyToClipboard(this, '{{ name }}')"
+						>
+							📋 Copy
+						</button>
+						<a
+							href="{{ url_for('get_uml_image', diagram_name=name) }}"
+							target="_blank"
+							class="btn btn-outline btn-small"
+							title="Open PNG"
+							>🖼️</a
+						>
+						<a
+							href="{{ url_for('download_file', file_type='uml', file_name=name) }}"
+							class="btn btn-outline btn-small"
+							title="Download .puml"
+							>📥</a
+						>
+					</div>
+				</div>
+				<div class="uml-card-body">
+					<!-- Visual View -->
+					<div class="uml-visual-view" id="visual-{{ name }}">
+						<div class="uml-image-container">
+							<div class="uml-loading" id="loading-{{ name }}">
+								<div class="uml-loading-spinner"></div>
+								<span>Rendering diagram...</span>
+							</div>
+							<img
+								src="{{ url_for('get_uml_svg', diagram_name=name) }}"
+								alt="{{ name.replace('_', ' ').title() }}"
+								onload="document.getElementById('loading-{{ name }}').style.display='none'"
+								onerror="handleImageError('{{ name }}')"
+								style="display: none"
+								id="img-{{ name }}"
+							/>
+						</div>
+					</div>
+					<!-- Code View -->
+					<div class="uml-code-view" id="code-{{ name }}">
+						<pre><code id="uml-{{ name }}">{{ content }}</code></pre>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</section>
+
+	<!-- README Section -->
+	<section class="portal-section" id="section-readme">
+		<div class="section-header">
+			<h2 class="section-title">📖 README Documentation</h2>
+			<div>
+				<button class="copy-btn" onclick="copyMarkdown('readme')">
+					📋 Copy All
+				</button>
+				<a
+					href="{{ url_for('download_file', file_type='doc', file_name='readme') }}"
+					class="btn btn-outline btn-small"
+					>📥 Download</a
+				>
+			</div>
+		</div>
+
+		<div class="markdown-container">
+			<div class="markdown-header">
+				<span class="markdown-title">README.md</span>
+				<a
+					href="{{ url_for('view_doc_raw', doc_name='readme') }}"
+					target="_blank"
+					class="btn btn-outline btn-small"
+					>View Raw</a
+				>
+			</div>
+			<div class="markdown-content" id="readme-content">
+				{{ docs.readme | safe if docs.readme else 'README.md not found' }}
+			</div>
+		</div>
+	</section>
+
+	<!-- Final Report Section -->
+	<section class="portal-section" id="section-report">
+		<div class="section-header">
+			<h2 class="section-title">📝 Final Report</h2>
+			<div>
+				<button class="copy-btn" onclick="copyMarkdown('final_report')">
+					📋 Copy All
+				</button>
+				<a
+					href="{{ url_for('download_file', file_type='doc', file_name='final_report') }}"
+					class="btn btn-outline btn-small"
+					>📥 Download</a
+				>
+			</div>
+		</div>
+
+		<div class="markdown-container">
+			<div class="markdown-header">
+				<span class="markdown-title">FINAL_REPORT.md</span>
+				<a
+					href="{{ url_for('view_doc_raw', doc_name='final_report') }}"
+					target="_blank"
+					class="btn btn-outline btn-small"
+					>View Raw</a
+				>
+			</div>
+			<div class="markdown-content" id="report-content">
+				{{ docs.final_report | safe if docs.final_report else 'FINAL_REPORT.md
+				not found' }}
+			</div>
+		</div>
+	</section>
+
+	<!-- Kanban Guide Section -->
+	<section class="portal-section" id="section-kanban">
+		<div class="section-header">
+			<h2 class="section-title">📊 Kanban Guide</h2>
+			<div>
+				<button class="copy-btn" onclick="copyMarkdown('kanban_guide')">
+					📋 Copy All
+				</button>
+				<a
+					href="{{ url_for('download_file', file_type='doc', file_name='kanban_guide') }}"
+					class="btn btn-outline btn-small"
+					>📥 Download</a
+				>
+			</div>
+		</div>
+
+		<div class="markdown-container">
+			<div class="markdown-header">
+				<span class="markdown-title">KANBAN_GUIDE.md</span>
+				<a
+					href="{{ url_for('view_doc_raw', doc_name='kanban_guide') }}"
+					target="_blank"
+					class="btn btn-outline btn-small"
+					>View Raw</a
+				>
+			</div>
+			<div class="markdown-content" id="kanban-content">
+				{{ docs.kanban_guide | safe if docs.kanban_guide else 'KANBAN_GUIDE.md
+				not found' }}
+			</div>
+		</div>
+	</section>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+<script>
+	// Tab switching
+	document.querySelectorAll(".portal-tab").forEach((tab) => {
+		tab.addEventListener("click", function () {
+			switchTab(this.dataset.section);
+		});
+	});
+
+	function switchTab(sectionName) {
+		// Update tabs
+		document
+			.querySelectorAll(".portal-tab")
+			.forEach((t) => t.classList.remove("active"));
+		document
+			.querySelector(`.portal-tab[data-section="${sectionName}"]`)
+			.classList.add("active");
+
+		// Update sections
+		document
+			.querySelectorAll(".portal-section")
+			.forEach((s) => s.classList.remove("active"));
+		document.getElementById(`section-${sectionName}`).classList.add("active");
+	}
+
+	// Show visual view for UML diagram
+	function showVisual(name) {
+		const card = document.querySelector(`[data-diagram="${name}"]`);
+		const visualView = document.getElementById(`visual-${name}`);
+		const codeView = document.getElementById(`code-${name}`);
+		const toggleBtns = card.querySelectorAll(".view-toggle-btn");
+
+		visualView.classList.remove("hidden");
+		codeView.classList.remove("active");
+		toggleBtns[0].classList.add("active");
+		toggleBtns[1].classList.remove("active");
+	}
+
+	// Show code view for UML diagram
+	function showCode(name) {
+		const card = document.querySelector(`[data-diagram="${name}"]`);
+		const visualView = document.getElementById(`visual-${name}`);
+		const codeView = document.getElementById(`code-${name}`);
+		const toggleBtns = card.querySelectorAll(".view-toggle-btn");
+
+		visualView.classList.add("hidden");
+		codeView.classList.add("active");
+		toggleBtns[0].classList.remove("active");
+		toggleBtns[1].classList.add("active");
+	}
+
+	// Handle image load success
+	function handleImageLoad(name) {
+		const loading = document.getElementById(`loading-${name}`);
+		const img = document.getElementById(`img-${name}`);
+		if (loading) loading.style.display = "none";
+		if (img) img.style.display = "block";
+	}
+
+	// Handle image load error
+	function handleImageError(name) {
+		const loading = document.getElementById(`loading-${name}`);
+		const container = loading.parentElement;
+		loading.innerHTML = `
+			<div class="uml-error">
+				<p>⚠️ Could not render diagram</p>
+				<p style="font-size: 0.85rem; color: #9ca3af;">Click "Code" to view PlantUML source</p>
+			</div>
+		`;
+	}
+
+	// Copy UML to clipboard
+	function copyToClipboard(btn, name) {
+		const code = document.getElementById(`uml-${name}`).textContent;
+		navigator.clipboard.writeText(code).then(() => {
+			btn.textContent = "✓ Copied!";
+			btn.classList.add("copied");
+			setTimeout(() => {
+				btn.textContent = "📋 Copy";
+				btn.classList.remove("copied");
+			}, 2000);
+		});
+	}
+
+	// Copy markdown
+	function copyMarkdown(docType) {
+		fetch(`/cosmos/doc/${docType}`)
+			.then((response) => response.text())
+			.then((text) => {
+				navigator.clipboard.writeText(text).then(() => {
+					alert("Copied to clipboard!");
+				});
+			});
+	}
+
+	// Parse and render markdown + initialize UML images
+	document.addEventListener("DOMContentLoaded", function () {
+		// Render markdown
+		const markdownContainers = [
+			"readme-content",
+			"report-content",
+			"kanban-content",
+		];
+
+		markdownContainers.forEach((id) => {
+			const container = document.getElementById(id);
+			if (container) {
+				const rawContent = container.textContent;
+				if (rawContent && !rawContent.includes("not found")) {
+					container.innerHTML = marked.parse(rawContent);
+				}
+			}
+		});
+
+		// Initialize UML images - show them when loaded
+		document.querySelectorAll(".uml-card").forEach((card) => {
+			const name = card.dataset.diagram;
+			const img = document.getElementById(`img-${name}`);
+			if (img) {
+				img.onload = function () {
+					const loading = document.getElementById(`loading-${name}`);
+					if (loading) loading.style.display = "none";
+					img.style.display = "block";
+				};
+			}
+		});
+	});
+</script>
+{% endblock %}

@@ -1,0 +1,579 @@
+{% extends 'base.html' %} {% block title %}{{ result.location_name }} Forecast -
+Galaxy Weather{% endblock %} {% block content %}
+<div class="forecast-page">
+	<!-- Header -->
+	<section class="forecast-header">
+		<div class="header-content">
+			<a href="{{ url_for('index') }}" class="back-link"> ← Back to Home </a>
+			<div class="location-info">
+				<h1 class="location-name">{{ result.location_name }}</h1>
+				<p class="location-details">
+					{{ result.country }} {% if forecast.location %}
+					<span class="coords"
+						>({{ forecast.location.lat }}, {{ forecast.location.lon }})</span
+					>
+					{% endif %}
+				</p>
+				{% if forecast.location.localtime %}
+				<p class="local-time">Local time: {{ forecast.location.localtime }}</p>
+				{% endif %}
+			</div>
+		</div>
+	</section>
+
+	<!-- Current Weather -->
+	{% if forecast.current %}
+	<section class="current-weather">
+		<div class="section-container">
+			<h2 class="section-title">Current Conditions</h2>
+			<div class="current-grid">
+				<div class="current-main">
+					<div class="weather-icon-large">
+						{% if forecast.current.condition_icon %}
+						<img
+							src="https:{{ forecast.current.condition_icon }}"
+							alt="{{ forecast.current.condition }}"
+						/>
+						{% else %} 🌤️ {% endif %}
+					</div>
+					<div class="current-temp">
+						<span class="temp-value"
+							>{{ forecast.current.temp_c|round(1) }}</span
+						>
+						<span class="temp-unit">°C</span>
+					</div>
+					<div class="current-condition">{{ forecast.current.condition }}</div>
+					<div class="feels-like">
+						Feels like {{ forecast.current.feelslike_c|round(1) }}°C
+					</div>
+				</div>
+
+				<div class="current-details">
+					<div class="detail-card">
+						<span class="detail-icon">💧</span>
+						<span class="detail-label">Humidity</span>
+						<span class="detail-value">{{ forecast.current.humidity }}%</span>
+					</div>
+					<div class="detail-card">
+						<span class="detail-icon">💨</span>
+						<span class="detail-label">Wind</span>
+						<span class="detail-value"
+							>{{ forecast.current.wind_kph }} km/h {{ forecast.current.wind_dir
+							}}</span
+						>
+					</div>
+					<div class="detail-card">
+						<span class="detail-icon">📊</span>
+						<span class="detail-label">Pressure</span>
+						<span class="detail-value"
+							>{{ forecast.current.pressure_mb }} mb</span
+						>
+					</div>
+					<div class="detail-card">
+						<span class="detail-icon">☀️</span>
+						<span class="detail-label">UV Index</span>
+						<span class="detail-value">{{ forecast.current.uv }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	{% endif %}
+
+	<!-- Trend Analysis -->
+	{% if forecast.analysis %}
+	<section class="analysis-section">
+		<div class="section-container">
+			<h2 class="section-title">Trend Analysis</h2>
+			<div class="analysis-grid">
+				<div class="analysis-card">
+					<h3>Temperature Trend</h3>
+					<div
+						class="trend-value {% if forecast.analysis.temp_trend > 0 %}trend-up{% else %}trend-down{% endif %}"
+					>
+						{% if forecast.analysis.temp_trend > 0 %}📈{% else %}📉{% endif %}
+						{{ forecast.analysis.temp_trend|round(2) }}°C/day
+					</div>
+					<p class="trend-desc">
+						{% if forecast.analysis.temp_trend > 0 %} Temperature is trending
+						upward {% elif forecast.analysis.temp_trend < 0 %} Temperature is
+						trending downward {% else %} Temperature is stable {% endif %}
+					</p>
+				</div>
+				<div class="analysis-card">
+					<h3>Average Temperature</h3>
+					<div class="analysis-value">
+						{{ forecast.analysis.avg_temperature|round(1) }}°C
+					</div>
+					<p class="trend-desc">Based on historical data</p>
+				</div>
+				<div class="analysis-card">
+					<h3>Humidity Trend</h3>
+					<div
+						class="trend-value {% if forecast.analysis.humidity_trend > 0 %}trend-up{% else %}trend-down{% endif %}"
+					>
+						{% if forecast.analysis.humidity_trend > 0 %}📈{% else %}📉{% endif
+						%} {{ forecast.analysis.humidity_trend|round(2) }}%/day
+					</div>
+					<p class="trend-desc">
+						{% if forecast.analysis.humidity_trend > 0 %} Humidity is increasing
+						{% elif forecast.analysis.humidity_trend < 0 %} Humidity is
+						decreasing {% else %} Humidity is stable {% endif %}
+					</p>
+				</div>
+				<div class="analysis-card">
+					<h3>Common Condition</h3>
+					<div class="analysis-value">
+						{{ forecast.analysis.common_conditions }}
+					</div>
+					<p class="trend-desc">Most frequent weather</p>
+				</div>
+			</div>
+		</div>
+	</section>
+	{% endif %}
+
+	<!-- Daily Forecast -->
+	{% if forecast.forecast_days %}
+	<section class="daily-forecast">
+		<div class="section-container">
+			<h2 class="section-title">{{ request.range_days }}-Day Forecast</h2>
+			<div class="forecast-grid">
+				{% for day in forecast.forecast_days %}
+				<div class="day-card">
+					<div class="day-date">{{ day.date|date }}</div>
+					<div class="day-icon">
+						{% if day.condition_icon %}
+						<img
+							src="https:{{ day.condition_icon }}"
+							alt="{{ day.condition }}"
+						/>
+						{% else %} 🌤️ {% endif %}
+					</div>
+					<div class="day-temp">
+						<span class="temp-high">{{ day.temp_c.max|round }}°</span>
+						<span class="temp-low">{{ day.temp_c.min|round }}°</span>
+					</div>
+					<div class="day-condition">{{ day.condition }}</div>
+					<div class="day-details">
+						<div class="day-detail">
+							<span>💧</span> {{ day.humidity|round }}%
+						</div>
+						<div class="day-detail">
+							<span>🌧️</span> {{ day.chance_of_rain }}%
+						</div>
+						{% if day.chance_of_snow > 0 %}
+						<div class="day-detail">
+							<span>❄️</span> {{ day.chance_of_snow }}%
+						</div>
+						{% endif %}
+					</div>
+					<div class="day-astro">
+						<span>🌅 {{ day.sunrise }}</span>
+						<span>🌇 {{ day.sunset }}</span>
+					</div>
+					{% if day.moon_phase %}
+					<div class="moon-phase">🌙 {{ day.moon_phase }}</div>
+					{% endif %}
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+	{% endif %}
+
+	<!-- Request Info -->
+	<section class="request-info">
+		<div class="section-container">
+			<div class="info-card">
+				<h3>Forecast Request Details</h3>
+				<div class="info-grid">
+					<div class="info-item">
+						<span class="info-label">Query</span>
+						<span class="info-value">{{ request.query }}</span>
+					</div>
+					<div class="info-item">
+						<span class="info-label">Query Type</span>
+						<span class="info-value">{{ request.query_type }}</span>
+					</div>
+					<div class="info-item">
+						<span class="info-label">Days Requested</span>
+						<span class="info-value">{{ request.range_days }}</span>
+					</div>
+					<div class="info-item">
+						<span class="info-label">Status</span>
+						<span class="info-value status-{{ request.status }}"
+							>{{ request.status }}</span
+						>
+					</div>
+					<div class="info-item">
+						<span class="info-label">Created</span>
+						<span class="info-value">{{ request.created_at }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Actions -->
+	<section class="forecast-actions">
+		<div class="section-container">
+			<a href="{{ url_for('index') }}#forecast-form" class="btn btn-primary">
+				New Forecast
+			</a>
+			<a href="{{ url_for('index') }}#history" class="btn btn-secondary">
+				View History
+			</a>
+		</div>
+	</section>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+	.forecast-page {
+		padding-top: 80px;
+	}
+
+	.forecast-header {
+		padding: 2rem 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.header-content {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		color: #8b5cf6;
+		text-decoration: none;
+		margin-bottom: 1rem;
+		transition: color 0.3s;
+	}
+
+	.back-link:hover {
+		color: #a78bfa;
+	}
+
+	.location-name {
+		font-size: 2.5rem;
+		font-weight: 700;
+		color: #e5e7eb;
+		margin-bottom: 0.5rem;
+	}
+
+	.location-details {
+		color: #9ca3af;
+		font-size: 1.1rem;
+	}
+
+	.coords {
+		color: #6b7280;
+		font-size: 0.9rem;
+	}
+
+	.local-time {
+		color: #6b7280;
+		font-size: 0.9rem;
+		margin-top: 0.5rem;
+	}
+
+	/* Current Weather */
+	.current-weather {
+		padding: 3rem 0;
+	}
+
+	.current-grid {
+		display: grid;
+		grid-template-columns: 1fr 2fr;
+		gap: 3rem;
+		align-items: center;
+	}
+
+	.current-main {
+		text-align: center;
+	}
+
+	.weather-icon-large img {
+		width: 100px;
+		height: 100px;
+	}
+
+	.current-temp {
+		margin: 1rem 0;
+	}
+
+	.temp-value {
+		font-size: 5rem;
+		font-weight: 700;
+		color: #e5e7eb;
+		line-height: 1;
+	}
+
+	.temp-unit {
+		font-size: 2rem;
+		color: #9ca3af;
+		vertical-align: top;
+	}
+
+	.current-condition {
+		font-size: 1.5rem;
+		color: #e5e7eb;
+		margin-bottom: 0.5rem;
+	}
+
+	.feels-like {
+		color: #6b7280;
+	}
+
+	.current-details {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem;
+	}
+
+	.detail-card {
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 1rem;
+		padding: 1.5rem;
+		text-align: center;
+	}
+
+	.detail-icon {
+		font-size: 1.5rem;
+		display: block;
+		margin-bottom: 0.5rem;
+	}
+
+	.detail-label {
+		display: block;
+		color: #6b7280;
+		font-size: 0.85rem;
+		margin-bottom: 0.25rem;
+	}
+
+	.detail-value {
+		display: block;
+		color: #e5e7eb;
+		font-size: 1.1rem;
+		font-weight: 500;
+	}
+
+	/* Analysis Section */
+	.analysis-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1.5rem;
+	}
+
+	.analysis-card {
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 1rem;
+		padding: 1.5rem;
+		text-align: center;
+	}
+
+	.analysis-card h3 {
+		color: #9ca3af;
+		font-size: 0.9rem;
+		margin-bottom: 1rem;
+	}
+
+	.trend-value,
+	.analysis-value {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: #e5e7eb;
+		margin-bottom: 0.5rem;
+	}
+
+	.trend-up {
+		color: #f59e0b;
+	}
+
+	.trend-down {
+		color: #06b6d4;
+	}
+
+	.trend-desc {
+		color: #6b7280;
+		font-size: 0.85rem;
+	}
+
+	/* Daily Forecast */
+	.forecast-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.day-card {
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 1rem;
+		padding: 1.5rem;
+		text-align: center;
+		transition: all 0.3s ease;
+	}
+
+	.day-card:hover {
+		background: rgba(255, 255, 255, 0.05);
+		transform: translateY(-5px);
+	}
+
+	.day-date {
+		color: #9ca3af;
+		font-size: 0.9rem;
+		margin-bottom: 1rem;
+	}
+
+	.day-icon img {
+		width: 64px;
+		height: 64px;
+	}
+
+	.day-temp {
+		margin: 1rem 0;
+	}
+
+	.temp-high {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: #e5e7eb;
+	}
+
+	.temp-low {
+		font-size: 1.1rem;
+		color: #6b7280;
+		margin-left: 0.5rem;
+	}
+
+	.day-condition {
+		color: #9ca3af;
+		font-size: 0.9rem;
+		margin-bottom: 1rem;
+	}
+
+	.day-details {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.day-detail {
+		color: #6b7280;
+		font-size: 0.8rem;
+	}
+
+	.day-astro {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+		color: #6b7280;
+		font-size: 0.75rem;
+		margin-top: 0.5rem;
+	}
+
+	.moon-phase {
+		color: #6b7280;
+		font-size: 0.75rem;
+		margin-top: 0.5rem;
+	}
+
+	/* Request Info */
+	.request-info {
+		padding: 3rem 0;
+	}
+
+	.info-card {
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 1rem;
+		padding: 2rem;
+	}
+
+	.info-card h3 {
+		color: #e5e7eb;
+		margin-bottom: 1.5rem;
+	}
+
+	.info-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 1rem;
+	}
+
+	.info-item {
+		padding: 1rem;
+		background: rgba(0, 0, 0, 0.2);
+		border-radius: 0.5rem;
+	}
+
+	.info-label {
+		display: block;
+		color: #6b7280;
+		font-size: 0.85rem;
+		margin-bottom: 0.25rem;
+	}
+
+	.info-value {
+		color: #e5e7eb;
+	}
+
+	.status-completed {
+		color: #10b981;
+	}
+
+	.status-processing {
+		color: #f59e0b;
+	}
+
+	.status-failed {
+		color: #ef4444;
+	}
+
+	/* Actions */
+	.forecast-actions {
+		padding: 2rem 0 4rem;
+		text-align: center;
+	}
+
+	.forecast-actions .btn {
+		margin: 0 0.5rem;
+	}
+
+	/* Responsive */
+	@media (max-width: 1024px) {
+		.current-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.analysis-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 640px) {
+		.location-name {
+			font-size: 1.8rem;
+		}
+
+		.temp-value {
+			font-size: 3.5rem;
+		}
+
+		.analysis-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.info-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+{% endblock %}

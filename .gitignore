@@ -1,0 +1,7 @@
+doc.md
+__pycache__
+*.pyc
+.env
+.vscode
+*.db   
+.DS_Store

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{% block title %}Galaxy Weather{% endblock %}</title>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='style.css') }}"
+		/>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='galaxy.css') }}"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		{% block extra_css %}{% endblock %}
+	</head>
+	<body>
+		<!-- Galaxy Background -->
+		<div id="galaxy-bg">
+			<canvas id="galaxy-canvas"></canvas>
+		</div>
+
+		<!-- Navigation -->
+		<nav class="navbar">
+			<div class="nav-container">
+				<a href="{{ url_for('index') }}" class="nav-logo">
+					<span class="logo-icon">🌌</span>
+					<span class="logo-text">Galaxy Weather</span>
+				</a>
+				<div class="nav-links">
+					<a href="{{ url_for('index') }}#hero">Home</a>
+					<a href="{{ url_for('index') }}#about">About</a>
+					<a href="{{ url_for('index') }}#forecast-form">Forecast</a>
+					<a href="{{ url_for('index') }}#history">History</a>
+					<a href="{{ url_for('index') }}#contact">Contact</a>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Flash Messages -->
+		{% with messages = get_flashed_messages(with_categories=true) %} {% if
+		messages %}
+		<div class="flash-messages">
+			{% for category, message in messages %}
+			<div class="flash-message flash-{{ category }}">
+				{{ message }}
+				<button class="flash-close" onclick="this.parentElement.remove()">
+					×
+				</button>
+			</div>
+			{% endfor %}
+		</div>
+		{% endif %} {% endwith %}
+
+		<!-- Main Content -->
+		<main class="main-content">{% block content %}{% endblock %}</main>
+
+		<!-- Footer -->
+		<footer class="footer">
+			<div class="footer-container">
+				<div class="footer-section">
+					<h4>Galaxy Weather</h4>
+					<p>
+						Intelligent weather forecasting powered by advanced analytics and
+						space-age technology.
+					</p>
+				</div>
+				<div class="footer-section">
+					<h4>Quick Links</h4>
+					<a href="{{ url_for('index') }}#about">About Us</a>
+					<a href="{{ url_for('index') }}#forecast-form">Get Forecast</a>
+					<a href="{{ url_for('index') }}#history">History</a>
+				</div>
+				<div class="footer-section">
+					<h4>Data Sources</h4>
+					<a href="https://www.weatherapi.com" target="_blank">WeatherAPI</a>
+					<p class="footer-note">Real-time & historical data</p>
+				</div>
+			</div>
+			<div class="footer-bottom">
+				<p>
+					&copy; {{ now.year }} Galaxy Weather. Built for academic excellence.
+				</p>
+			</div>
+		</footer>
+
+		<!-- Scripts -->
+		<script src="{{ url_for('static', filename='galaxy.js') }}"></script>
+		{% block extra_js %}{% endblock %}
+	</body>
+</html>

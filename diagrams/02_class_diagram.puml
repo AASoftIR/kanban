@@ -1,0 +1,58 @@
+
+@startuml ClassDiagram
+!theme plain
+
+class WeatherRequest {
+    - id: int
+    - query: str
+    - query_type: str
+    - range_days: int
+    - created_at: datetime
+    - status: str
+    --
+    + save()
+    + update_status(status)
+    + {static} get_by_id(id): WeatherRequest
+    + {static} get_all(limit): List[WeatherRequest]
+}
+
+class WeatherDataFetcher {
+    - api_key: str
+    --
+    + get_current(query): dict
+    + get_forecast(query, days): dict
+    + get_history(query, date): dict
+    + get_history_range(query, days_back): list
+}
+
+class ForecastEngine {
+    - fetcher: WeatherDataFetcher
+    --
+    + analyze_history(data): dict
+    + generate_forecast(query, days): dict
+    + process_json_upload(json_data): dict
+    - _calculate_trend(values): float
+    - _moving_average(values, window): list
+}
+
+class ForecastResult {
+    - id: int
+    - request_id: int
+    - location_name: str
+    - country: str
+    - latitude: float
+    - longitude: float
+    - forecast_data: str
+    - current_temp: float
+    - current_humidity: float
+    - current_condition: str
+    --
+    + save()
+    + get_forecast_data(): dict
+    + {static} get_by_request_id(id): ForecastResult
+}
+
+ForecastEngine --> WeatherDataFetcher : uses
+ForecastResult --> WeatherRequest : belongs to
+
+@enduml

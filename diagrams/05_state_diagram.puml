@@ -1,0 +1,33 @@
+
+@startuml StateDiagram
+!theme plain
+
+[*] --> Created : Request submitted
+
+Created --> Processing : Start processing
+Processing --> Completed : Success
+Processing --> Failed : Error
+
+Failed --> Created : Retry
+
+Completed --> Archived : After 30 days
+
+Archived --> [*] : Cleanup
+
+state Created {
+    [*] --> WaitingForProcess
+}
+
+state Processing {
+    [*] --> FetchingData
+    FetchingData --> AnalyzingTrends
+    AnalyzingTrends --> GeneratingForecast
+    GeneratingForecast --> SavingResults
+    SavingResults --> [*]
+}
+
+state Completed {
+    [*] --> DisplayingResults
+}
+
+@enduml
