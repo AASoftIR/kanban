@@ -2,6 +2,7 @@
 @startuml ClassDiagram
 !theme plain
 
+
 class WeatherRequest {
     - id: int
     - query: str

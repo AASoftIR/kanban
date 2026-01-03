@@ -4,10 +4,17 @@
 
 ---
 
-**Course:** Software Engineering / Web Development  
+**Course:** Software Engineering  
+**University:** Kish International Campus of Sharif University  
 **Project Type:** Academic Project  
-**Date:** December 2024  
+**Methodology:** Kanban  
+**Date:** January 2026  
 **Version:** 1.0
+
+**Team Members:**
+
+- **عسل هادیان (Asal Hadian)** - Backend Developer
+- **صدف باقریان (Sadaf Bagherian)** - Frontend Developer & Documentation Lead
 
 ---
 
@@ -409,24 +416,63 @@ Galaxy Weather follows a **Model-View-Controller (MVC)** architectural pattern:
 
 Galaxy Weather implements a **hybrid forecasting approach** that combines:
 
-1. **API-based forecasting** (baseline predictions)
-2. **Trend analysis** (historical pattern recognition)
-3. **Statistical smoothing** (moving averages)
+1. **API-based forecasting** (baseline predictions from WeatherAPI)
+2. **Trend analysis** (historical pattern recognition using linear regression)
+3. **Statistical smoothing** (moving averages for noise reduction)
 
-### 8.2 Data Collection Phase
+### 8.2 Understanding the Day Range Parameter
+
+The `range_days` parameter (1-10 days) is a critical input that determines how many days of forecast the system retrieves and processes.
+
+#### How Day Range Affects the System:
+
+| User Selects | API Forecast Request     | Historical Fetch | Total API Calls |
+| ------------ | ------------------------ | ---------------- | --------------- |
+| 1 day        | `/forecast.json?days=1`  | 7 days back      | ~9 calls        |
+| 3 days       | `/forecast.json?days=3`  | 7 days back      | ~9 calls        |
+| 7 days       | `/forecast.json?days=7`  | 7 days back      | ~9 calls        |
+| 10 days      | `/forecast.json?days=10` | 7 days back      | ~9 calls        |
+
+**Important:** The historical data fetch is **always 7 days** regardless of forecast range. This ensures consistent trend analysis quality.
+
+### 8.3 Data Collection Phase
 
 ```python
-# Fetch current conditions
+# Step 1: Fetch current conditions (real-time data)
 current_data = fetcher.get_current(query)
 
-# Fetch API forecast (up to 10 days)
+# Step 2: Fetch API forecast (up to 10 days based on user selection)
 api_forecast = fetcher.get_forecast(query, days)
 
-# Fetch historical data (7 days back)
+# Step 3: Fetch historical data (always 7 days back for trend analysis)
 historical_data = fetcher.get_history_range(query, days_back=7)
 ```
 
-### 8.3 Trend Analysis
+#### Data Flow Visualization:
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                    DATA COLLECTION PIPELINE                       │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  INPUT: Location="Tehran", Days=7                                 │
+│                                                                   │
+│  STEP 1: GET /v1/current.json?q=Tehran                            │
+│  Returns: Current temperature, humidity, condition                │
+│                                                                   │
+│  STEP 2: GET /v1/forecast.json?q=Tehran&days=7                    │
+│  Returns: 7 days of forecasted weather                            │
+│                                                                   │
+│  STEP 3: GET /v1/history.json (×7 calls for past 7 days)          │
+│  Returns: Historical data for trend analysis                      │
+│                                                                   │
+│  STEP 4: Analyze trends + Adjust forecast values                  │
+│  Returns: Enhanced forecast with trend intelligence               │
+│                                                                   │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### 8.4 Trend Analysis
 
 **Linear Trend Calculation:**
 
@@ -437,9 +483,15 @@ $$m = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^{n}(x_i - \
 Where:
 
 - $m$ = trend coefficient (slope)
-- $x_i$ = day index
-- $y_i$ = temperature/humidity value
+- $x_i$ = day index (1, 2, 3, ..., 7)
+- $y_i$ = temperature/humidity value for that day
 - $\bar{x}$, $\bar{y}$ = mean values
+
+**Interpretation:**
+
+- Positive $m$ → Temperature/humidity is **rising**
+- Negative $m$ → Temperature/humidity is **falling**
+- $m$ close to 0 → Stable conditions
 
 **Implementation:**
 
@@ -455,7 +507,7 @@ def _calculate_trend(self, values):
     return numerator / denominator if denominator != 0 else 0
 ```
 
-### 8.4 Moving Average Smoothing
+### 8.5 Moving Average Smoothing
 
 $$MA_t = \frac{1}{w}\sum_{i=0}^{w-1}y_{t-i}$$
 
@@ -465,7 +517,7 @@ Where:
 - $w$ = window size (default: 3)
 - $y$ = historical values
 
-### 8.5 Forecast Adjustment
+### 8.6 Forecast Adjustment
 
 Final forecast values are adjusted based on trend analysis:
 
@@ -475,6 +527,52 @@ adjusted_humidity = api_forecast_humidity + (humidity_trend * adjustment_factor)
 ```
 
 The adjustment factor (0.1) provides subtle corrections while maintaining API forecast reliability.
+
+**Why 0.1 (10%) Adjustment Factor?**
+
+- API forecasts are already highly accurate (based on global weather models)
+- We only add a "hint" from local recent trends
+- Large adjustments could make predictions worse
+- This is a **refinement**, not a replacement of API predictions
+
+### 8.7 Real-World Example
+
+**Scenario:** User requests 5-day forecast for Tehran
+
+**Historical Data (Past 7 Days):**
+
+```
+Date          Temp    Humidity
+Day -7        8°C     45%
+Day -6        9°C     42%
+Day -5        10°C    40%
+Day -4        11°C    38%
+Day -3        12°C    35%
+Day -2        13°C    33%
+Day -1        14°C    30%
+```
+
+**Calculated Trends:**
+
+- Temperature trend: +1.0°C/day (rising)
+- Humidity trend: -2.5%/day (falling)
+
+**API Forecast vs Adjusted:**
+
+```
+Date    API Temp  Adjustment  Final Temp
+Day 1   14°C      +0.1°C      14.1°C
+Day 2   13°C      +0.1°C      13.1°C
+Day 3   12°C      +0.1°C      12.1°C
+```
+
+### 8.8 API Limitations
+
+| Limitation    | Free Plan   | Paid Plan     |
+| ------------- | ----------- | ------------- |
+| Forecast Days | 3 days max  | 10 days max   |
+| History Days  | 7 days back | 365 days back |
+| API Calls     | 1M/month    | Varies        |
 
 ---
 
