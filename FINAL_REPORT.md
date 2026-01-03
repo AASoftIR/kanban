@@ -152,31 +152,82 @@ Kanban was chosen for this project due to its:
 
 **Board Name:** Galaxy Weather Project
 
-**Columns:**
+**Columns (5-Column System):**
 
-| Column      | Purpose                                      |
-| ----------- | -------------------------------------------- |
-| Backlog     | All identified tasks waiting to be scheduled |
-| To Do       | Tasks prioritized for current sprint         |
-| In Progress | Tasks currently being worked on              |
-| Done        | Completed and verified tasks                 |
+| Column      | Purpose                                      | WIP Limit |
+| ----------- | -------------------------------------------- | --------- |
+| Backlog     | All identified tasks waiting to be scheduled | None      |
+| To Do       | Tasks prioritized for current iteration      | 4         |
+| In Progress | Tasks currently being worked on              | 2 (1/person) |
+| Testing     | Tasks awaiting verification and review       | 2         |
+| Done        | Completed and verified tasks                 | None      |
 
-### 4.3 Task Cards
+### 4.3 Kanban Workflow Visualization
 
-| Card                     | Description                           | Priority |
-| ------------------------ | ------------------------------------- | -------- |
-| Analyze WeatherAPI       | Study API documentation and endpoints | High     |
-| Design Database Schema   | Define tables and relationships       | High     |
-| Design Forecasting Logic | Algorithm design and pseudocode       | High     |
-| Build Flask Backend      | Routes, models, controllers           | High     |
-| Create Galaxy UI         | HTML templates and CSS                | Medium   |
-| Implement Loading Page   | Animation and AJAX processing         | Medium   |
-| Store Forecast History   | Database integration                  | Medium   |
-| Generate UML Diagrams    | Technical documentation               | Low      |
-| Write Final Report       | Academic documentation                | Low      |
-| Testing & Debugging      | Quality assurance                     | High     |
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                        GALAXY WEATHER KANBAN BOARD                              │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│  BACKLOG        TODO          IN PROGRESS     TESTING        DONE              │
+│  ┌───────┐     ┌───────┐     ┌───────┐       ┌───────┐      ┌───────┐         │
+│  │ Task  │ ──► │ Task  │ ──► │ Task  │ ──►   │ Task  │ ──►  │ Task  │         │
+│  │ Pool  │     │ Ready │     │ Active│       │ Review│      │ Done  │         │
+│  └───────┘     └───────┘     └───────┘       └───────┘      └───────┘         │
+│                                                                                 │
+│  WIP: None     WIP: 4        WIP: 2          WIP: 2         WIP: None          │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════       │
+│                         CONTINUOUS FLOW →                                       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
 
-### 4.4 Work-in-Progress Limits
+### 4.4 Trello Board Screenshots
+
+> **Note:** The following screenshots document our Kanban workflow throughout the project lifecycle.
+
+#### Screenshot Placeholders for Trello Documentation:
+
+| Screenshot | Description | Location |
+| ---------- | ----------- | -------- |
+| ![Trello Initial](files/trello_initial.png) | Initial board setup with empty columns | `files/trello_initial.png` |
+| ![Trello Backlog](files/trello_backlog.png) | Backlog filled with all project tasks | `files/trello_backlog.png` |
+| ![Trello Progress](files/trello_progress.png) | Mid-project state with tasks in progress | `files/trello_progress.png` |
+| ![Trello Final](files/trello_final.png) | Final state with all tasks completed | `files/trello_final.png` |
+| ![Task Card](files/trello_card.png) | Detailed view of a task card | `files/trello_card.png` |
+
+### 4.5 Task Cards
+
+| Card                     | Description                           | Priority | Assignee |
+| ------------------------ | ------------------------------------- | -------- | -------- |
+| Analyze WeatherAPI       | Study API documentation and endpoints | High     | Asal     |
+| Design Database Schema   | Define tables and relationships       | High     | Asal     |
+| Design Forecasting Logic | Algorithm design and pseudocode       | High     | Asal     |
+| Build Flask Backend      | Routes, models, controllers           | High     | Asal     |
+| Create Galaxy UI         | HTML templates and CSS                | Medium   | Sadaf    |
+| Implement Loading Page   | Animation and AJAX processing         | Medium   | Sadaf    |
+| Store Forecast History   | Database integration                  | Medium   | Asal     |
+| Generate UML Diagrams    | Technical documentation               | Low      | Sadaf    |
+| Write Final Report       | Academic documentation                | Low      | Sadaf    |
+| Testing & Debugging      | Quality assurance                     | High     | Both     |
+
+### 4.6 Team Task Distribution
+
+**Asal Hadian (Backend Developer):**
+- API analysis and integration
+- Database design and implementation
+- Forecasting algorithm development
+- Flask application backend
+- Error handling and validation
+
+**Sadaf Bagherian (Frontend Developer & Documentation):**
+- UI/UX design with Galaxy theme
+- HTML templates and CSS styling
+- JavaScript animations
+- UML diagram creation
+- Report and documentation writing
+
+### 4.7 Work-in-Progress Limits
 
 - Maximum 2 tasks in "In Progress" at any time
 - Daily review of board status
@@ -229,7 +280,11 @@ Kanban was chosen for this project due to its:
 
 ## 6. UML Diagrams Explanation
 
+> **Note:** All UML diagrams are available as both `.puml` source files in `/diagrams` and rendered images in `/files`.
+
 ### 6.1 Use Case Diagram
+
+![Use Case Diagram](files/01_use_case_diagram.svg)
 
 **Purpose:** Illustrates system functionality from user perspective
 
@@ -251,6 +306,8 @@ Kanban was chosen for this project due to its:
 - "Request Forecast" includes "View Forecast Result"
 
 ### 6.2 Class Diagram
+
+![Class Diagram](files/02_class_diagram.svg)
 
 **Purpose:** Shows system structure and class relationships
 
@@ -284,6 +341,8 @@ Kanban was chosen for this project due to its:
 
 ### 6.3 Sequence Diagram
 
+![Sequence Diagram](files/03_sequence_diagram.svg)
+
 **Purpose:** Shows interaction flow for forecast request
 
 **Flow:**
@@ -301,6 +360,8 @@ Kanban was chosen for this project due to its:
 
 ### 6.4 Activity Diagram
 
+![Activity Diagram](files/04_activity_diagram.svg)
+
 **Purpose:** Illustrates workflow process
 
 **Activities:**
@@ -316,6 +377,8 @@ Kanban was chosen for this project due to its:
 9. Display forecast → End
 
 ### 6.5 State Diagram
+
+![State Diagram](files/05_state_diagram.svg)
 
 **Purpose:** Shows forecast request lifecycle
 
@@ -334,6 +397,30 @@ Kanban was chosen for this project due to its:
 - Processing → Failed (error)
 - Failed → Created (retry)
 - Completed → Archived (after 30 days)
+
+### 6.6 Component Diagram
+
+![Component Diagram](files/06_component_diagram.svg)
+
+**Purpose:** Shows system components and their relationships
+
+**Components:**
+
+- **Frontend Layer:** Templates (index, loading, forecast, history)
+- **Backend Layer:** Flask routes, Forecast engine, Data models
+- **Data Layer:** SQLite database, WeatherAPI integration
+
+### 6.7 ER Diagram
+
+![ER Diagram](files/07_er_diagram.svg)
+
+**Purpose:** Shows database entity relationships
+
+**Entities:**
+
+- **weather_request:** Stores user forecast requests
+- **forecast_result:** Stores generated forecast data
+- **Relationship:** One-to-Many (one request → one result)
 
 ---
 

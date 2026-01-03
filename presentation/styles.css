@@ -1,0 +1,1000 @@
+/* ==================== Galaxy Weather Presentation Styles ==================== */
+
+:root {
+    --primary-bg: #0a0a1a;
+    --secondary-bg: #1a1a3a;
+    --accent-purple: #667eea;
+    --accent-purple-dark: #764ba2;
+    --accent-cyan: #00d4ff;
+    --accent-pink: #ff6b9d;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0c0;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --success: #4ade80;
+    --danger: #f87171;
+    --warning: #fbbf24;
+}
+
+/* ==================== Base Styles ==================== */
+
+.reveal {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: -0.02em;
+}
+
+.reveal h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.reveal h2 i {
+    margin-right: 0.5rem;
+    color: var(--accent-cyan);
+}
+
+.reveal p {
+    line-height: 1.6;
+}
+
+.reveal ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.reveal table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.reveal th, .reveal td {
+    padding: 0.6rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.reveal th {
+    background: var(--glass-bg);
+    font-weight: 600;
+    color: var(--accent-cyan);
+}
+
+/* ==================== Export Button ==================== */
+
+.export-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.export-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.export-btn:active {
+    transform: translateY(0);
+}
+
+.export-btn i {
+    font-size: 1.1rem;
+}
+
+/* ==================== Title Slide ==================== */
+
+.title-slide {
+    text-align: center;
+}
+
+.galaxy-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.galaxy-icon.large {
+    font-size: 6rem;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.main-title {
+    font-size: 4rem !important;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem !important;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.team-info {
+    margin-bottom: 2rem;
+}
+
+.team-info p {
+    font-size: 1.1rem;
+    margin: 0.3rem 0;
+    font-family: 'Vazirmatn', 'Inter', sans-serif;
+}
+
+.university-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* ==================== Table of Contents ==================== */
+
+.toc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.toc-item {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    text-align: left;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.toc-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: var(--accent-purple);
+}
+
+.toc-num {
+    display: inline-block;
+    background: var(--accent-purple);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+/* ==================== Problem & Solution ==================== */
+
+.problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.problem-card {
+    background: var(--glass-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.problem-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.problem-card.bad h3 { color: var(--danger); }
+.problem-card.good h3 { color: var(--success); }
+
+.problem-card li {
+    padding: 0.4rem 0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.problem-card.bad i { color: var(--danger); }
+.problem-card.good i { color: var(--success); }
+
+/* ==================== Objectives ==================== */
+
+.objectives-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.objective-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--glass-bg);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    font-size: 0.95rem;
+}
+
+.obj-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark));
+    border-radius: 50%;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* ==================== Kanban Board ==================== */
+
+.kanban-board {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.kanban-column {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    min-width: 120px;
+    text-align: center;
+}
+
+.column-header {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.column-header.backlog { background: #6b7280; }
+.column-header.todo { background: #3b82f6; }
+.column-header.progress { background: #f59e0b; }
+.column-header.testing { background: #8b5cf6; }
+.column-header.done { background: #10b981; }
+
+.column-wip {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.kanban-column p {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.kanban-arrow {
+    font-size: 1.5rem;
+    color: var(--accent-cyan);
+}
+
+/* ==================== Team Grid ==================== */
+
+.team-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.team-card {
+    background: var(--glass-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    text-align: center;
+}
+
+.team-avatar {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.team-card h3 {
+    font-family: 'Vazirmatn', 'Inter', sans-serif;
+    margin-bottom: 0.3rem;
+}
+
+.team-card .role {
+    color: var(--accent-cyan);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.team-card ul {
+    text-align: left;
+}
+
+.team-card li {
+    font-size: 0.85rem;
+    padding: 0.3rem 0;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.team-card li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent-purple);
+}
+
+/* ==================== Screenshots ==================== */
+
+.screenshot-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.screenshot-item {
+    text-align: center;
+}
+
+.screenshot-placeholder {
+    background: var(--glass-bg);
+    border: 2px dashed var(--glass-border);
+    border-radius: 8px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.screenshot-placeholder img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.screenshot-placeholder.no-image {
+    flex-direction: column;
+    color: var(--text-secondary);
+}
+
+.screenshot-placeholder.no-image::before {
+    content: '📷';
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.screenshot-item p {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* ==================== Requirements Table ==================== */
+
+.requirements-table {
+    font-size: 0.85rem;
+}
+
+.must { color: var(--danger); font-weight: 600; }
+.should { color: var(--warning); font-weight: 600; }
+.could { color: var(--success); font-weight: 600; }
+
+/* ==================== Comparison Table ==================== */
+
+.comparison-table table {
+    font-size: 0.85rem;
+}
+
+.comparison-table .highlight {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.note {
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+    margin-top: 1rem;
+    font-style: italic;
+}
+
+/* ==================== Tech Stack ==================== */
+
+.tech-stack {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.tech-category {
+    background: var(--glass-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    text-align: center;
+}
+
+.tech-category h3 {
+    margin-bottom: 1rem;
+    color: var(--accent-cyan);
+    font-size: 1rem;
+}
+
+.tech-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.tech-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.tech-item i {
+    font-size: 1.2rem;
+    color: var(--accent-purple);
+}
+
+/* ==================== UML List ==================== */
+
+.uml-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.uml-item {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.uml-item span:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--accent-purple);
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* ==================== Diagram Container ==================== */
+
+.diagram-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.diagram-image {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    max-height: 400px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.diagram-image img {
+    max-width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+}
+
+.diagram-placeholder {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 2rem;
+}
+
+.diagram-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.diagram-info {
+    text-align: left;
+}
+
+.diagram-info h4 {
+    color: var(--accent-cyan);
+    margin-bottom: 1rem;
+}
+
+.diagram-info li {
+    font-size: 0.85rem;
+    padding: 0.3rem 0;
+}
+
+.diagram-info ol {
+    padding-left: 1.5rem;
+}
+
+/* ==================== Dual Diagram ==================== */
+
+.dual-diagram {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.diagram-half {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    text-align: center;
+}
+
+.diagram-half img {
+    max-width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+}
+
+.diagram-half p {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* ==================== Architecture ==================== */
+
+.architecture-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.arch-layer {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 400px;
+}
+
+.arch-layer.client { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
+.arch-layer.server { background: rgba(168, 85, 247, 0.2); border: 1px solid #a855f7; }
+.arch-layer.database { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; min-width: 180px; }
+.arch-layer.api { background: rgba(249, 115, 22, 0.2); border: 1px solid #f97316; min-width: 180px; }
+
+.arch-layer h4 {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.arch-items {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+}
+
+.arch-items span {
+    background: var(--glass-bg);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+}
+
+.arch-arrow {
+    color: var(--accent-cyan);
+    font-weight: bold;
+}
+
+.arch-bottom {
+    display: flex;
+    gap: 2rem;
+}
+
+/* ==================== Algorithm Flow ==================== */
+
+.algorithm-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.algo-step {
+    background: var(--glass-bg);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    text-align: center;
+    min-width: 100px;
+}
+
+.step-num {
+    display: block;
+    background: var(--accent-purple);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    line-height: 24px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 0 auto 0.5rem;
+}
+
+.algo-step p {
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+.algo-arrow {
+    color: var(--accent-cyan);
+    font-size: 1.2rem;
+}
+
+.formula-box {
+    background: var(--glass-bg);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--accent-cyan);
+    font-size: 0.9rem;
+}
+
+.formula-box p {
+    margin: 0.3rem 0;
+}
+
+/* ==================== Hybrid Comparison ==================== */
+
+.hybrid-comparison {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.approach-card {
+    background: var(--glass-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.approach-card.highlight {
+    border-color: var(--accent-cyan);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.approach-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.approach-card li {
+    font-size: 0.85rem;
+    padding: 0.3rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.red { color: var(--danger); }
+.green { color: var(--success); }
+
+/* ==================== Demo Screenshots ==================== */
+
+.demo-screenshots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.demo-item {
+    text-align: center;
+}
+
+.demo-image {
+    background: var(--glass-bg);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    height: 200px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.demo-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.demo-placeholder {
+    color: var(--text-secondary);
+    font-size: 3rem;
+    opacity: 0.3;
+}
+
+.demo-item p {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* ==================== Test Results ==================== */
+
+.test-results table {
+    font-size: 0.9rem;
+}
+
+.pass {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.fail {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+/* ==================== Metrics Grid ==================== */
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+.metric-card {
+    background: var(--glass-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    text-align: center;
+    position: relative;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+}
+
+.metric-target {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.metric-label {
+    font-size: 0.85rem;
+}
+
+.metric-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1rem;
+}
+
+.metric-status.pass { color: var(--success); }
+
+/* ==================== Lessons & Future ==================== */
+
+.lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.lesson-item {
+    background: var(--glass-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    text-align: center;
+}
+
+.lesson-item i {
+    font-size: 2rem;
+    color: var(--accent-purple);
+    margin-bottom: 0.5rem;
+}
+
+.lesson-item h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.lesson-item p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.future-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.future-item {
+    background: var(--glass-bg);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.95rem;
+}
+
+.future-item i {
+    font-size: 1.5rem;
+    color: var(--accent-cyan);
+}
+
+/* ==================== Conclusion ==================== */
+
+.conclusion-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.conclusion-item {
+    background: var(--glass-bg);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+}
+
+.conclusion-item i {
+    color: var(--success);
+    font-size: 1.2rem;
+}
+
+/* ==================== Thank You ==================== */
+
+.thank-you-slide {
+    text-align: center;
+}
+
+.thank-you-slide h1 {
+    font-size: 3rem !important;
+    margin-bottom: 1rem;
+}
+
+.thank-you-slide h2 {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+}
+
+.team-names {
+    font-family: 'Vazirmatn', 'Inter', sans-serif;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.team-names-en {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.questions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    color: var(--accent-cyan);
+}
+
+.questions i {
+    font-size: 1.5rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ==================== Responsive ==================== */
+
+@media (max-width: 900px) {
+    .problem-grid,
+    .team-grid,
+    .dual-diagram,
+    .hybrid-comparison {
+        grid-template-columns: 1fr;
+    }
+    
+    .toc-grid,
+    .screenshot-grid,
+    .demo-screenshots,
+    .tech-stack {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .metrics-grid,
+    .uml-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .kanban-board {
+        flex-direction: column;
+    }
+    
+    .kanban-arrow {
+        transform: rotate(90deg);
+    }
+    
+    .diagram-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==================== Print/PDF ==================== */
+
+@media print {
+    .export-btn {
+        display: none;
+    }
+}
