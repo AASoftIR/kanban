@@ -1,80 +1,178 @@
 
 @startuml SequenceDiagram
+' =============================================================================
+' Galaxy Weather - Sequence Diagram (Rational Rose Standard)
+' =============================================================================
+' Description: Shows the dynamic behavior of forecast generation process
+' Scenario: User requests weather forecast for a location
+' Author: Galaxy Weather Team
+' Version: 1.0
+' =============================================================================
+
 !theme plain
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBorderColor #A80036
+skinparam sequenceParticipantBackgroundColor #FEFECE
+skinparam sequenceLifeLineBorderColor #A80036
+skinparam sequenceMessageAlign center
 
-actor User
-participant Browser
-participant "Flask App" as Flask
-participant "WeatherAPI" as API
-participant "ForecastEngine" as Engine
-database "SQLite DB" as DB
+' =============================================================================
+' PARTICIPANTS (in order of interaction)
+' =============================================================================
+actor "User" as User <<actor>>
+participant "Browser\n<<boundary>>" as Browser
+participant "FlaskApp\n<<control>>" as Flask
+participant "ForecastEngine\n<<control>>" as Engine
+participant "WeatherDataFetcher\n<<boundary>>" as Fetcher
+participant "WeatherAPI\n<<external>>" as API
+database "SQLite\n<<entity>>" as DB
 
-User -> Browser: Enter location & days
-activate Browser
+' =============================================================================
+' MAIN SUCCESS SCENARIO
+' =============================================================================
 
-Browser -> Flask: POST /forecast
-activate Flask
+title **UC03: Request Forecast - Main Success Scenario**
 
-Flask -> DB: Create WeatherRequest
-activate DB
-DB --> Flask: request_id
+== Initialization Phase ==
+
+User -> Browser : 1. enterLocation(location, days)
+activate Browser #FEFECE
+
+Browser -> Flask : 1.1. POST /forecast\n{location, days}
+activate Flask #ADD1B2
+
+' --- Create Request ---
+Flask -> DB : 1.1.1. <<create>>\nINSERT weather_request
+activate DB #E8E8E8
+DB --> Flask : 1.1.1.1. request_id : int
 deactivate DB
 
-Flask --> Browser: Redirect to /loading
+Flask --> Browser : 1.1.2. HTTP 302 Redirect\n/loading/{request_id}
 deactivate Flask
 
-Browser -> Flask: POST /process/{id}
-activate Flask
+== Processing Phase ==
 
-Flask -> Engine: generate_forecast(query, days)
-activate Engine
+Browser -> Flask : 2. POST /process/{request_id}
+activate Flask #ADD1B2
 
-Engine -> API: GET /current.json
-activate API
-API --> Engine: current weather data
-deactivate API
+Flask -> Engine : 2.1. generate_forecast(query, days)
+activate Engine #FFB6C1
 
-Engine -> API: GET /forecast.json
-activate API
-API --> Engine: forecast data
-deactivate API
+' --- Fetch Current Weather ---
+group Fetch Weather Data [loop for each data type]
+    
+    Engine -> Fetcher : 2.1.1. get_current(query)
+    activate Fetcher #87CEEB
+    
+    Fetcher -> API : 2.1.1.1. GET /current.json?q={query}
+    activate API #DDA0DD
+    API --> Fetcher : 2.1.1.2. <<JSON>>\ncurrent_weather_data
+    deactivate API
+    
+    Fetcher --> Engine : 2.1.1.3. current : dict
+    deactivate Fetcher
+    
+    ' --- Fetch Forecast ---
+    Engine -> Fetcher : 2.1.2. get_forecast(query, days)
+    activate Fetcher #87CEEB
+    
+    Fetcher -> API : 2.1.2.1. GET /forecast.json?q={query}&days={days}
+    activate API #DDA0DD
+    API --> Fetcher : 2.1.2.2. <<JSON>>\nforecast_data
+    deactivate API
+    
+    Fetcher --> Engine : 2.1.2.3. forecast : dict
+    deactivate Fetcher
+    
+    ' --- Fetch Historical Data ---
+    Engine -> Fetcher : 2.1.3. get_history_range(query, 7)
+    activate Fetcher #87CEEB
+    
+    loop i = 1 to 7
+        Fetcher -> API : 2.1.3.1. GET /history.json?q={query}&dt={date[i]}
+        activate API #DDA0DD
+        API --> Fetcher : 2.1.3.2. <<JSON>>\nhistory_data[i]
+        deactivate API
+    end
+    
+    Fetcher --> Engine : 2.1.3.3. historical_data : List<dict>
+    deactivate Fetcher
+    
+end
 
-Engine -> API: GET /history.json (x7)
-activate API
-API --> Engine: historical data
-deactivate API
+== Analysis Phase ==
 
-Engine -> Engine: analyze_history()
-Engine -> Engine: apply_trend_adjustments()
+Engine -> Engine : 2.1.4. analyze_history(historical_data)
+note right
+  Calculate trends:
+  - Moving averages
+  - Linear regression
+  - Pattern detection
+end note
 
-Engine --> Flask: forecast_result
+Engine -> Engine : 2.1.5. _apply_trend_adjustments()
+
+Engine --> Flask : 2.2. forecast_result : dict
 deactivate Engine
 
-Flask -> DB: Save ForecastResult
-activate DB
-DB --> Flask: result_id
-deactivate DB
+== Persistence Phase ==
 
-Flask -> DB: Update request status
-activate DB
-DB --> Flask: OK
-deactivate DB
+alt forecast_result.success
+    
+    Flask -> DB : 2.3. <<create>>\nINSERT forecast_result
+    activate DB #E8E8E8
+    DB --> Flask : 2.3.1. result_id : int
+    deactivate DB
+    
+    Flask -> DB : 2.4. UPDATE weather_request\nSET status = 'completed'
+    activate DB #E8E8E8
+    DB --> Flask : 2.4.1. <<acknowledge>>
+    deactivate DB
+    
+    Flask --> Browser : 2.5. HTTP 200 JSON\n{redirect: /forecast/{id}}
+    
+else forecast_result.error
+    
+    Flask -> DB : 2.3a. UPDATE weather_request\nSET status = 'failed'
+    activate DB #E8E8E8
+    DB --> Flask : 2.3a.1. <<acknowledge>>
+    deactivate DB
+    
+    Flask --> Browser : 2.5a. HTTP 400 JSON\n{error: message}
+    
+end
 
-Flask --> Browser: JSON {redirect: /forecast/{id}}
 deactivate Flask
 
-Browser -> Flask: GET /forecast/{id}
-activate Flask
+== Presentation Phase ==
 
-Flask -> DB: Get ForecastResult
-activate DB
-DB --> Flask: result data
+Browser -> Flask : 3. GET /forecast/{request_id}
+activate Flask #ADD1B2
+
+Flask -> DB : 3.1. SELECT * FROM forecast_result\nWHERE request_id = {id}
+activate DB #E8E8E8
+DB --> Flask : 3.1.1. result : ForecastResult
 deactivate DB
 
-Flask --> Browser: Render forecast.html
+Flask --> Browser : 3.2. HTTP 200 HTML\n<<render>> forecast.html
 deactivate Flask
 
-Browser --> User: Display forecast
+Browser --> User : 3.3. displayForecast(result)
 deactivate Browser
+
+' =============================================================================
+' NOTES
+' =============================================================================
+note over API
+  **External System**
+  WeatherAPI.com
+  Rate limit: 1M calls/month
+end note
+
+note over DB
+  **Persistence**
+  SQLite database
+  file: database.db
+end note
 
 @enduml

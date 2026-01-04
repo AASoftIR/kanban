@@ -1,33 +1,217 @@
 
 @startuml StateDiagram
+' =============================================================================
+' Galaxy Weather - State Diagram (Rational Rose Standard)
+' =============================================================================
+' Description: Shows the lifecycle states of a WeatherRequest entity
+' Author: Galaxy Weather Team
+' Version: 1.0
+' =============================================================================
+
 !theme plain
+skinparam stateBackgroundColor #FEFECE
+skinparam stateBorderColor #A80036
+skinparam stateArrowColor #A80036
+skinparam stateFontStyle bold
 
-[*] --> Created : Request submitted
+title **State Diagram: WeatherRequest Lifecycle**
 
-Created --> Processing : Start processing
-Processing --> Completed : Success
-Processing --> Failed : Error
+' =============================================================================
+' INITIAL STATE
+' =============================================================================
+[*] --> Created : <<create>>\nPOST /forecast
 
-Failed --> Created : Retry
+' =============================================================================
+' TOP-LEVEL STATES
+' =============================================================================
 
-Completed --> Archived : After 30 days
-
-Archived --> [*] : Cleanup
-
-state Created {
-    [*] --> WaitingForProcess
+state Created <<state>> {
+    ' Entry/Exit Actions
+    Created : **entry/** log("Request created")
+    Created : **exit/** validate_input()
+    
+    [*] --> Validating
+    
+    state Validating <<state>> {
+        Validating : Check input format
+        Validating : Detect query type
+    }
+    
+    Validating --> WaitingForProcess : [input valid]
+    Validating --> ValidationFailed : [input invalid]
+    
+    state WaitingForProcess <<state>> {
+        WaitingForProcess : Awaiting user action
+        WaitingForProcess : Display loading page
+    }
+    
+    state ValidationFailed <<state>> {
+        ValidationFailed : Show error to user
+    }
+    
+    ValidationFailed --> [*]
 }
 
-state Processing {
-    [*] --> FetchingData
-    FetchingData --> AnalyzingTrends
-    AnalyzingTrends --> GeneratingForecast
-    GeneratingForecast --> SavingResults
-    SavingResults --> [*]
+Created --> Processing : startProcessing()\n[POST /process/{id}]
+
+state Processing <<state>> {
+    ' Entry/Exit Actions
+    Processing : **entry/** status = 'processing'
+    Processing : **exit/** log("Processing complete")
+    Processing : **do/** fetch_and_analyze()
+    
+    [*] --> FetchingCurrent
+    
+    state FetchingCurrent <<state>> {
+        FetchingCurrent : GET /current.json
+        FetchingCurrent : **entry/** init_api_client()
+    }
+    
+    FetchingCurrent --> FetchingForecast : [current_data received]
+    FetchingCurrent --> APIError : [timeout OR http_error]
+    
+    state FetchingForecast <<state>> {
+        FetchingForecast : GET /forecast.json
+        FetchingForecast : days = request.range_days
+    }
+    
+    FetchingForecast --> FetchingHistory : [forecast_data received]
+    FetchingForecast --> APIError : [timeout OR http_error]
+    
+    state FetchingHistory <<state>> {
+        FetchingHistory : GET /history.json (x7)
+        FetchingHistory : **do/** iterate_days(1..7)
+    }
+    
+    FetchingHistory --> AnalyzingTrends : [all_history_fetched]
+    FetchingHistory --> APIError : [partial_failure]
+    
+    state AnalyzingTrends <<state>> {
+        AnalyzingTrends : Calculate moving averages
+        AnalyzingTrends : Compute linear trends
+        AnalyzingTrends : **do/** statistical_analysis()
+    }
+    
+    AnalyzingTrends --> GeneratingForecast : [analysis_complete]
+    
+    state GeneratingForecast <<state>> {
+        GeneratingForecast : Apply trend adjustments
+        GeneratingForecast : Generate extended days
+        GeneratingForecast : **do/** build_forecast_json()
+    }
+    
+    GeneratingForecast --> SavingResults : [forecast_ready]
+    
+    state SavingResults <<state>> {
+        SavingResults : INSERT forecast_result
+        SavingResults : **entry/** serialize_to_json()
+    }
+    
+    SavingResults --> [*] : [saved_successfully]
+    SavingResults --> DBError : [db_write_error]
+    
+    state APIError <<state>> {
+        APIError : Log error details
+        APIError : **entry/** capture_exception()
+    }
+    
+    state DBError <<state>> {
+        DBError : Log database error
+        DBError : **entry/** rollback_transaction()
+    }
+    
+    APIError --> [*]
+    DBError --> [*]
 }
 
-state Completed {
+Processing --> Completed : [success]\nstatus = 'completed'
+Processing --> Failed : [error]\nstatus = 'failed'
+
+state Completed <<state>> {
+    ' Entry/Exit Actions
+    Completed : **entry/** notify_ready()
+    Completed : **do/** await_user_view()
+    
     [*] --> DisplayingResults
+    
+    state DisplayingResults <<state>> {
+        DisplayingResults : Render forecast.html
+        DisplayingResults : Show temperature chart
+        DisplayingResults : Display trend analysis
+    }
+    
+    DisplayingResults --> Viewed : [user_viewed]
+    
+    state Viewed <<state>> {
+        Viewed : Result accessed by user
+        Viewed : **entry/** log_view_timestamp()
+    }
+    
+    Viewed --> [*]
 }
+
+Completed --> Archived : [after(30 days)]\narchive()
+
+state Failed <<state>> {
+    ' Entry/Exit Actions
+    Failed : **entry/** log_failure()
+    Failed : **do/** display_error_message()
+    
+    [*] --> DisplayingError
+    
+    state DisplayingError <<state>> {
+        DisplayingError : Show error to user
+        DisplayingError : Provide retry option
+    }
+    
+    DisplayingError --> [*]
+}
+
+Failed --> Created : retry()\n[user_clicks_retry]
+
+state Archived <<state>> {
+    ' Entry/Exit Actions
+    Archived : **entry/** move_to_archive()
+    Archived : data_compressed = true
+    
+    [*] --> StoredInArchive
+    
+    state StoredInArchive <<state>> {
+        StoredInArchive : Compressed storage
+        StoredInArchive : Read-only access
+    }
+    
+    StoredInArchive --> [*]
+}
+
+Archived --> [*] : cleanup()\n[after(365 days)]
+
+' =============================================================================
+' NOTES
+' =============================================================================
+note right of Processing
+  **Timeout Constraints:**
+  - API calls: 10 seconds each
+  - Total processing: 60 seconds max
+  
+  **Retry Policy:**
+  - Max 3 retries per API call
+  - Exponential backoff
+end note
+
+note left of Completed
+  **Data Retention:**
+  - Active: 30 days
+  - Archived: 365 days
+  - Then: Permanent deletion
+end note
+
+note bottom of Failed
+  **Error Types:**
+  - API timeout
+  - Invalid location
+  - Rate limit exceeded
+  - Database error
+end note
 
 @enduml

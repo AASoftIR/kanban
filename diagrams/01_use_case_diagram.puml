@@ -1,27 +1,93 @@
 
 @startuml UseCase
+' =============================================================================
+' Galaxy Weather - Use Case Diagram (Rational Rose Standard)
+' =============================================================================
+' Description: Defines the functional requirements and actor interactions
+' Author: Galaxy Weather Team
+' Version: 1.0
+' =============================================================================
+
 !theme plain
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #FEFECE
+skinparam usecaseBorderColor #A80036
+skinparam actorBackgroundColor #FEFECE
+skinparam actorBorderColor #A80036
 
 left to right direction
-skinparam packageStyle rectangle
 
-actor User
+' =============================================================================
+' ACTORS
+' =============================================================================
+actor "User" as User <<primary>>
+actor "WeatherAPI" as API <<secondary>>
+actor "System Timer" as Timer <<secondary>>
 
-rectangle "Galaxy Weather System" {
-    usecase "Enter Location" as UC1
-    usecase "Upload JSON Data" as UC2
-    usecase "Request Forecast" as UC3
-    usecase "View Forecast Result" as UC4
-    usecase "View Forecast History" as UC5
+' =============================================================================
+' SYSTEM BOUNDARY
+' =============================================================================
+rectangle "<<subsystem>>\nGalaxy Weather System" as GWS {
+    
+    ' --- Primary Use Cases ---
+    usecase "UC01: Enter Location" as UC01 <<basic>>
+    usecase "UC02: Upload JSON Data" as UC02 <<basic>>
+    usecase "UC03: Request Forecast" as UC03 <<basic>>
+    usecase "UC04: View Forecast Result" as UC04 <<basic>>
+    usecase "UC05: View Forecast History" as UC05 <<basic>>
+    
+    ' --- Secondary Use Cases ---
+    usecase "UC06: Validate Input" as UC06 <<secondary>>
+    usecase "UC07: Fetch Weather Data" as UC07 <<secondary>>
+    usecase "UC08: Analyze Trends" as UC08 <<secondary>>
+    usecase "UC09: Store Results" as UC09 <<secondary>>
 }
 
-User --> UC1
-User --> UC2
-User --> UC3
-User --> UC4
-User --> UC5
+' =============================================================================
+' ASSOCIATIONS (Actor to Use Case)
+' =============================================================================
+User --> UC01 : initiates
+User --> UC02 : initiates
+User --> UC03 : initiates
+User --> UC04 : requests
+User --> UC05 : requests
 
-UC3 ..> UC1 : <<include>>
-UC3 ..> UC4 : <<include>>
+API <-- UC07 : fetches from
+Timer --> UC09 : triggers cleanup
+
+' =============================================================================
+' RELATIONSHIPS (Use Case to Use Case)
+' =============================================================================
+' Include relationships (mandatory behavior)
+UC03 ..> UC06 : <<include>>
+UC03 ..> UC07 : <<include>>
+UC03 ..> UC08 : <<include>>
+UC03 ..> UC09 : <<include>>
+
+UC02 ..> UC06 : <<include>>
+
+' Extend relationships (optional behavior)
+UC01 ..> UC03 : <<extend>>\n[location provided]
+UC02 ..> UC03 : <<extend>>\n[JSON uploaded]
+
+' Generalization
+UC04 <|-- UC05 : <<generalization>>
+
+' =============================================================================
+' NOTES
+' =============================================================================
+note right of UC03
+  **Preconditions:**
+  - Valid location or JSON data
+  **Postconditions:**
+  - Forecast generated and stored
+  **Business Rules:**
+  - Max 10 days forecast
+end note
+
+note bottom of API
+  External weather
+  data provider
+end note
 
 @enduml

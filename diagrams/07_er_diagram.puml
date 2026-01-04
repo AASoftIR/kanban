@@ -1,45 +1,179 @@
 
 @startuml ERDiagram
-!theme plain
+' =============================================================================
+' Galaxy Weather - Entity-Relationship Diagram (Rational Rose Standard)
+' =============================================================================
+' Description: Shows the database schema and entity relationships
+' Author: Galaxy Weather Team
+' Version: 1.0
+' Database: SQLite 3
+' =============================================================================
 
-entity "weather_request" as WR {
-    * id : INTEGER <<PK>>
+!theme plain
+skinparam entityBackgroundColor #FEFECE
+skinparam entityBorderColor #A80036
+skinparam linetype ortho
+
+title **Entity-Relationship Diagram: Galaxy Weather Database**
+
+' =============================================================================
+' ENTITIES
+' =============================================================================
+
+entity "weather_request" as WR <<table>> {
+    ' --- Primary Key ---
+    * **id** : INTEGER <<PK, AUTO_INCREMENT>>
+    ==
+    ' --- Required Attributes ---
+    * query : TEXT <<NOT NULL>>
+    * query_type : TEXT <<NOT NULL>>
+    * range_days : INTEGER <<NOT NULL, CHECK(1-10)>>
+    * created_at : TIMESTAMP <<DEFAULT CURRENT_TIMESTAMP>>
+    * status : TEXT <<DEFAULT 'created'>>
     --
-    * query : TEXT
-    * query_type : TEXT
-    * range_days : INTEGER
-    * created_at : TIMESTAMP
-    * status : TEXT
+    ' --- Constraints ---
+    <<CHECK>> status IN ('created', 'processing', 'completed', 'failed', 'archived')
+    <<CHECK>> query_type IN ('city', 'coordinates', 'postal', 'ip', 'json_upload')
+    <<INDEX>> idx_status (status)
+    <<INDEX>> idx_created (created_at DESC)
 }
 
-entity "forecast_result" as FR {
-    * id : INTEGER <<PK>>
+entity "forecast_result" as FR <<table>> {
+    ' --- Primary Key ---
+    * **id** : INTEGER <<PK, AUTO_INCREMENT>>
+    ==
+    ' --- Foreign Key ---
+    * request_id : INTEGER <<FK, NOT NULL>>
     --
-    * request_id : INTEGER <<FK>>
+    ' --- Location Attributes ---
     location_name : TEXT
     country : TEXT
-    latitude : REAL
-    longitude : REAL
-    forecast_data : TEXT
-    current_temp : REAL
-    current_humidity : REAL
-    current_condition : TEXT
-    * created_at : TIMESTAMP
-}
-
-entity "historical_cache" as HC {
-    * id : INTEGER <<PK>>
+    latitude : REAL <<PRECISION 6>>
+    longitude : REAL <<PRECISION 6>>
     --
-    * location_query : TEXT
-    * date : TEXT
-    avg_temp : REAL
-    max_temp : REAL
-    min_temp : REAL
-    humidity : REAL
-    condition : TEXT
-    * cached_at : TIMESTAMP
+    ' --- Forecast Data ---
+    forecast_data : TEXT <<JSON>>
+    --
+    ' --- Current Conditions ---
+    current_temp : REAL <<CELSIUS>>
+    current_humidity : REAL <<PERCENT 0-100>>
+    current_condition : TEXT
+    --
+    ' --- Audit ---
+    * created_at : TIMESTAMP <<DEFAULT CURRENT_TIMESTAMP>>
+    --
+    ' --- Constraints ---
+    <<FK>> request_id REFERENCES weather_request(id) ON DELETE CASCADE
+    <<INDEX>> idx_request (request_id)
+    <<INDEX>> idx_location (location_name, country)
 }
 
-WR ||--o{ FR : "has"
+entity "historical_cache" as HC <<table>> {
+    ' --- Primary Key ---
+    * **id** : INTEGER <<PK, AUTO_INCREMENT>>
+    ==
+    ' --- Composite Unique Key ---
+    * location_query : TEXT <<NOT NULL>>
+    * date : TEXT <<NOT NULL, FORMAT 'YYYY-MM-DD'>>
+    --
+    ' --- Weather Metrics ---
+    avg_temp : REAL <<CELSIUS>>
+    max_temp : REAL <<CELSIUS>>
+    min_temp : REAL <<CELSIUS>>
+    humidity : REAL <<PERCENT 0-100>>
+    condition : TEXT
+    --
+    ' --- Cache Metadata ---
+    * cached_at : TIMESTAMP <<DEFAULT CURRENT_TIMESTAMP>>
+    --
+    ' --- Constraints ---
+    <<UNIQUE>> (location_query, date)
+    <<CHECK>> max_temp >= min_temp
+    <<CHECK>> avg_temp BETWEEN min_temp AND max_temp
+    <<INDEX>> idx_location_date (location_query, date)
+    <<INDEX>> idx_cached (cached_at)
+}
+
+' =============================================================================
+' RELATIONSHIPS
+' =============================================================================
+
+' weather_request 1 -----> 0..1 forecast_result
+' One request may have zero or one result (identifying relationship)
+WR ||--o| FR : "generates\n(1:0..1)"
+
+' Note: historical_cache is independent (no FK relationship)
+' It serves as a lookup cache for any location query
+
+' =============================================================================
+' RELATIONSHIP DESCRIPTIONS
+' =============================================================================
+note right of WR
+  **weather_request**
+  - Created when user submits forecast request
+  - Tracks the lifecycle status
+  - Parent entity in the model
+  
+  **Cardinality Rules:**
+  - Each request has at most one result
+  - Results cannot exist without a request
+end note
+
+note left of FR
+  **forecast_result**
+  - Created upon successful processing
+  - Contains serialized JSON forecast
+  - Dependent entity (weak)
+  
+  **Data Types:**
+  - forecast_data: JSON string
+  - Contains multi-day forecasts
+end note
+
+note bottom of HC
+  **historical_cache**
+  - Independent lookup table
+  - Keyed by (location, date)
+  - TTL: entries older than 24h refreshed
+  
+  **Purpose:**
+  - Reduce API calls
+  - Improve response time
+end note
+
+' =============================================================================
+' DATA DICTIONARY
+' =============================================================================
+note as DataDict
+  **Data Dictionary**
+  
+  | Attribute | Type | Description |
+  |-----------|------|-------------|
+  | query | TEXT | Location search query |
+  | query_type | TEXT | Type of query (city/coords/postal) |
+  | range_days | INT | Forecast range (1-10 days) |
+  | status | TEXT | Request processing status |
+  | forecast_data | JSON | Serialized forecast array |
+  | current_temp | REAL | Temperature in Celsius |
+  | humidity | REAL | Relative humidity (0-100%) |
+end note
+
+' =============================================================================
+' LEGEND
+' =============================================================================
+legend bottom right
+  **Notation Legend**
+  |= Symbol |= Meaning |
+  | * | Required (NOT NULL) |
+  | **bold** | Primary Key |
+  | <<PK>> | Primary Key |
+  | <<FK>> | Foreign Key |
+  | <<UNIQUE>> | Unique Constraint |
+  | <<CHECK>> | Check Constraint |
+  | <<INDEX>> | Database Index |
+  | ||--o| | One to Zero-or-One |
+  | ||--|{ | One to Many |
+  | }|--|{ | Many to Many |
+endlegend
 
 @enduml

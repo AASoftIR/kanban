@@ -1,25 +1,186 @@
 @startuml ActivityDiagram
-!theme plain
+' =============================================================================
+' Galaxy Weather - Activity Diagram (Rational Rose Standard)
+' =============================================================================
+' Description: Shows the workflow of the forecast generation process
+' Author: Galaxy Weather Team
+' Version: 1.0
+' =============================================================================
 
+!theme plain
+skinparam activityBackgroundColor #FEFECE
+skinparam activityBorderColor #A80036
+skinparam activityDiamondBackgroundColor #FEFECE
+skinparam activityDiamondBorderColor #A80036
+skinparam swimlaneBackgroundColor #F5F5F5
+skinparam swimlaneBorderColor #A80036
+
+title **Activity Diagram: Weather Forecast Generation**
+
+|#LightBlue|User|
+|#LightGreen|Flask App|
+|#LightYellow|Forecast Engine|
+|#LightPink|Database|
+|#LightGray|External API|
+
+' =============================================================================
+' INITIAL STATE
+' =============================================================================
+|User|
 start
 
-:User Enters Location
-or Uploads JSON;
+:<<action>>\nEnter Location\nor Upload JSON;
+note right
+  **Input Options:**
+  - City name
+  - Coordinates (lat,lon)
+  - Postal code
+  - JSON file upload
+end note
 
-:Validate Input;
+:<<action>>\nSubmit Request;
 
-if (Valid?) then (yes)
-    :Fetch Current Weather;
-    :Fetch Historical Data;
-    :Analyze Trends;
-    :Generate Forecast;
-    :Store Results in DB;
-    :Display Forecast;
+' =============================================================================
+' REQUEST CREATION
+' =============================================================================
+|Flask App|
+:<<action>>\nReceive HTTP Request;
+
+:<<action>>\nValidate Input Format;
+
+if (<<guard>>\n[Input Valid?]) then ([yes])
+    
+    :<<action>>\nDetect Query Type;
+    
+    |Database|
+    :<<action>>\nCreate WeatherRequest\n{status: 'processing'};
+    
+    |Flask App|
+    :<<action>>\nRedirect to Loading Page;
+    
+else ([no])
+    
+    :<<action>>\nGenerate Error Response;
+    
+    |User|
+    :<<action>>\nDisplay Error Message;
+    
     stop
-else (no)
-    :Show Error Message;
-    :Return to Input;
-    stop
+    
 endif
+
+' =============================================================================
+' DATA FETCHING (Fork - Parallel Activities)
+' =============================================================================
+|Forecast Engine|
+:<<action>>\nInitialize Forecast Generation;
+
+fork
+    ' --- Branch 1: Current Weather ---
+    |External API|
+    :<<action>>\nFetch Current Weather\nGET /current.json;
+    
+fork again
+    ' --- Branch 2: Forecast Data ---
+    |External API|
+    :<<action>>\nFetch Forecast Data\nGET /forecast.json;
+    
+fork again
+    ' --- Branch 3: Historical Data ---
+    |External API|
+    
+    while (<<guard>>\n[i <= 7]) is ([true])
+        :<<action>>\nFetch History Day [i]\nGET /history.json;
+        :<<action>>\nIncrement i;
+    endwhile ([false])
+    
+end fork
+
+' =============================================================================
+' DATA ANALYSIS
+' =============================================================================
+|Forecast Engine|
+
+if (<<guard>>\n[All Data Retrieved?]) then ([yes])
+    
+    :<<action>>\nExtract Metrics\n(temp, humidity, conditions);
+    
+    :<<action>>\nCalculate Moving Averages\n(window: 3 days);
+    
+    :<<action>>\nCompute Linear Trend\n(least squares regression);
+    
+    :<<action>>\nApply Trend Adjustments\nto Forecast Data;
+    
+    :<<action>>\nGenerate Extended Forecast;
+    note right
+      **Algorithm:**
+      forecast[i] = base[i] + 
+        (trend * i) + 
+        seasonal_adjustment
+    end note
+    
+else ([no])
+    
+    :<<action>>\nLog API Error;
+    
+    |Database|
+    :<<action>>\nUpdate Request Status\n{status: 'failed'};
+    
+    |User|
+    :<<action>>\nDisplay API Error;
+    
+    stop
+    
+endif
+
+' =============================================================================
+' PERSISTENCE
+' =============================================================================
+|Database|
+:<<action>>\nSave ForecastResult\n(JSON serialized);
+
+:<<action>>\nUpdate Request Status\n{status: 'completed'};
+
+' =============================================================================
+' PRESENTATION
+' =============================================================================
+|Flask App|
+:<<action>>\nPrepare Response Data;
+
+:<<action>>\nRender forecast.html\nTemplate;
+
+|User|
+:<<action>>\nView Forecast Results;
+
+if (<<guard>>\n[View History?]) then ([yes])
+    
+    |Flask App|
+    :<<action>>\nQuery Historical Forecasts;
+    
+    |Database|
+    :<<action>>\nRetrieve Past Results;
+    
+    |User|
+    :<<action>>\nDisplay History List;
+    
+else ([no])
+endif
+
+' =============================================================================
+' FINAL STATE
+' =============================================================================
+|User|
+stop
+
+' =============================================================================
+' LEGEND
+' =============================================================================
+legend right
+  |= Symbol |= Meaning |
+  | <<action>> | Activity/Action |
+  | <<guard>> | Condition/Guard |
+  | [yes]/[no] | Decision Branch |
+  | fork/end fork | Parallel Activities |
+endlegend
 
 @enduml

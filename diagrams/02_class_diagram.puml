@@ -1,59 +1,183 @@
 
 @startuml ClassDiagram
+' =============================================================================
+' Galaxy Weather - Class Diagram (Rational Rose Standard)
+' =============================================================================
+' Description: Shows the static structure of the system including classes,
+'              attributes, operations, and relationships
+' Author: Galaxy Weather Team
+' Version: 1.0
+' =============================================================================
+
 !theme plain
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam classBackgroundColor #FEFECE
+skinparam classBorderColor #A80036
+skinparam stereotypeCBackgroundColor #ADD1B2
 
-
-class WeatherRequest {
-    - id: int
-    - query: str
-    - query_type: str
-    - range_days: int
-    - created_at: datetime
-    - status: str
-    --
-    + save()
-    + update_status(status)
-    + {static} get_by_id(id): WeatherRequest
-    + {static} get_all(limit): List[WeatherRequest]
+' =============================================================================
+' PACKAGES
+' =============================================================================
+package "models" <<Frame>> {
+    
+    ' =========================================================================
+    ' ENTITY CLASSES (Persistent)
+    ' =========================================================================
+    class WeatherRequest <<entity>> {
+        ' --- Attributes ---
+        - id : int {readonly, PK}
+        - query : str {not null}
+        - query_type : str {not null}
+        - range_days : int {not null, range: 1..10}
+        - created_at : datetime {readonly}
+        - status : str {default: 'created'}
+        __
+        ' --- Operations ---
+        + save() : WeatherRequest
+        + update_status(status: str) : void
+        + {static} get_by_id(id: int) : WeatherRequest
+        + {static} get_all(limit: int = 50) : List<WeatherRequest>
+    }
+    
+    class ForecastResult <<entity>> {
+        ' --- Attributes ---
+        - id : int {readonly, PK}
+        - request_id : int {not null, FK}
+        - location_name : str
+        - country : str
+        - latitude : float
+        - longitude : float
+        - forecast_data : str {JSON}
+        - current_temp : float
+        - current_humidity : float
+        - current_condition : str
+        - created_at : datetime {readonly}
+        __
+        ' --- Operations ---
+        + save() : ForecastResult
+        + get_forecast_data() : dict
+        + {static} get_by_request_id(id: int) : ForecastResult
+        + {static} get_all_with_requests(limit: int) : List<ForecastResult>
+    }
+    
+    class HistoricalCache <<entity>> {
+        ' --- Attributes ---
+        - id : int {readonly, PK}
+        - location_query : str {not null}
+        - date : str {not null}
+        - avg_temp : float
+        - max_temp : float
+        - min_temp : float
+        - humidity : float
+        - condition : str
+        - cached_at : datetime {readonly}
+        __
+        ' --- Constraints ---
+        {UNIQUE(location_query, date)}
+    }
 }
 
-class WeatherDataFetcher {
-    - api_key: str
-    --
-    + get_current(query): dict
-    + get_forecast(query, days): dict
-    + get_history(query, date): dict
-    + get_history_range(query, days_back): list
+package "forecast" <<Frame>> {
+    
+    ' =========================================================================
+    ' BOUNDARY CLASSES (Interface with external systems)
+    ' =========================================================================
+    class WeatherDataFetcher <<boundary>> {
+        ' --- Attributes ---
+        - api_key : str {readonly}
+        - base_url : str = 'http://api.weatherapi.com/v1'
+        __
+        ' --- Operations ---
+        + <<constructor>> WeatherDataFetcher(api_key: str = None)
+        + get_current(query: str) : dict
+        + get_forecast(query: str, days: int = 10) : dict
+        + get_history(query: str, date: str) : dict
+        + get_history_range(query: str, days_back: int = 7) : List<dict>
+    }
+    
+    ' =========================================================================
+    ' CONTROL CLASSES (Business Logic)
+    ' =========================================================================
+    class ForecastEngine <<control>> {
+        ' --- Attributes ---
+        - fetcher : WeatherDataFetcher
+        __
+        ' --- Operations ---
+        + <<constructor>> ForecastEngine()
+        + analyze_history(data: List<dict>) : dict
+        + generate_forecast(query: str, days: int) : dict
+        + process_json_upload(json_data: dict) : dict
+        - _calculate_trend(values: List<float>) : float
+        - _moving_average(values: List<float>, window: int) : List<float>
+        - _extract_metrics(historical_data: List<dict>) : dict
+    }
 }
 
-class ForecastEngine {
-    - fetcher: WeatherDataFetcher
-    --
-    + analyze_history(data): dict
-    + generate_forecast(query, days): dict
-    + process_json_upload(json_data): dict
-    - _calculate_trend(values): float
-    - _moving_average(values, window): list
+package "app" <<Frame>> {
+    
+    ' =========================================================================
+    ' CONTROLLER CLASS (Flask Routes)
+    ' =========================================================================
+    class FlaskApp <<control>> {
+        ' --- Attributes ---
+        - forecast_engine : ForecastEngine
+        - secret_key : str
+        __
+        ' --- Operations ---
+        + index() : Response
+        + create_forecast() : Response
+        + loading(request_id: int) : Response
+        + process_forecast(request_id: int) : Response
+        + forecast_result(request_id: int) : Response
+        + history() : Response
+        + api_forecast() : Response
+    }
 }
 
-class ForecastResult {
-    - id: int
-    - request_id: int
-    - location_name: str
-    - country: str
-    - latitude: float
-    - longitude: float
-    - forecast_data: str
-    - current_temp: float
-    - current_humidity: float
-    - current_condition: str
-    --
-    + save()
-    + get_forecast_data(): dict
-    + {static} get_by_request_id(id): ForecastResult
-}
+' =============================================================================
+' RELATIONSHIPS
+' =============================================================================
 
-ForecastEngine --> WeatherDataFetcher : uses
-ForecastResult --> WeatherRequest : belongs to
+' Composition (strong ownership - lifecycle dependency)
+WeatherRequest "1" *-- "0..1" ForecastResult : creates >
+
+' Aggregation (weak ownership)
+ForecastEngine "1" o-- "1" WeatherDataFetcher : uses >
+
+' Association
+FlaskApp "1" --> "1" ForecastEngine : delegates to >
+FlaskApp "1" --> "*" WeatherRequest : manages >
+FlaskApp "1" --> "*" ForecastResult : manages >
+
+' Dependency (uses)
+WeatherDataFetcher ..> HistoricalCache : <<uses>>\ncaches data
+ForecastEngine ..> WeatherRequest : <<creates>>
+ForecastEngine ..> ForecastResult : <<creates>>
+
+' =============================================================================
+' NOTES AND CONSTRAINTS
+' =============================================================================
+note top of ForecastEngine
+  **Responsibility:**
+  Orchestrates forecast generation
+  using statistical analysis
+  
+  **Pattern:** Facade
+end note
+
+note right of WeatherDataFetcher
+  **External Interface:**
+  WeatherAPI.com
+  
+  **Timeout:** 10 seconds
+end note
+
+note bottom of WeatherRequest
+  **Invariant:**
+  {range_days >= 1 AND range_days <= 10}
+  {status IN ('created', 'processing', 
+   'completed', 'failed')}
+end note
 
 @enduml

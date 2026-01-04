@@ -1,44 +1,218 @@
 
 @startuml ComponentDiagram
-!theme plain
+' =============================================================================
+' Galaxy Weather - Component Diagram (Rational Rose Standard)
+' =============================================================================
+' Description: Shows the physical architecture and component dependencies
+' Author: Galaxy Weather Team
+' Version: 1.0
+' =============================================================================
 
-package "Galaxy Weather Application" {
-    
-    package "Frontend (Jinja2 Templates)" {
-        [index.html] as Index
-        [loading.html] as Loading
-        [forecast.html] as Forecast
-        [base.html] as Base
-    }
-    
-    package "Static Assets" {
-        [style.css] as CSS
-        [galaxy.css] as GalaxyCSS
-        [galaxy.js] as GalaxyJS
-    }
-    
-    package "Backend (Flask)" {
-        [app.py] as App
-        [forecast.py] as ForecastModule
-        [models.py] as Models
-    }
-    
-    database "SQLite" as DB
-    
-    cloud "WeatherAPI" as API
+!theme plain
+skinparam componentBackgroundColor #FEFECE
+skinparam componentBorderColor #A80036
+skinparam packageBackgroundColor #F5F5F5
+skinparam packageBorderColor #A80036
+skinparam interfaceBackgroundColor #B4D7E8
+skinparam databaseBackgroundColor #E8E8E8
+
+title **Component Diagram: Galaxy Weather Architecture**
+
+' =============================================================================
+' EXTERNAL SYSTEMS
+' =============================================================================
+cloud "<<external>>\nWeatherAPI.com" as ExtAPI {
+    interface "REST API" as IAPI
+    [Weather Data Service] as WDS
+    WDS - IAPI
 }
 
-Index --> Base
-Loading --> Base
-Forecast --> Base
+actor "<<actor>>\nUser" as User
 
-Index --> CSS
-Index --> GalaxyCSS
-Index --> GalaxyJS
+' =============================================================================
+' MAIN SYSTEM BOUNDARY
+' =============================================================================
+package "<<system>>\nGalaxy Weather Application" as GWA {
+    
+    ' =========================================================================
+    ' PRESENTATION LAYER
+    ' =========================================================================
+    package "<<layer>>\nPresentation Layer" as PL {
+        
+        package "<<subsystem>>\nTemplates (Jinja2)" as Templates {
+            component "<<template>>\nbase.html" as Base {
+                port "layout" as PBase
+            }
+            component "<<template>>\nindex.html" as Index
+            component "<<template>>\nloading.html" as Loading
+            component "<<template>>\nforecast.html" as Forecast
+            component "<<template>>\nhistory.html" as History
+            
+            ' Template inheritance
+            Index ..> Base : <<extends>>
+            Loading ..> Base : <<extends>>
+            Forecast ..> Base : <<extends>>
+            History ..> Base : <<extends>>
+        }
+        
+        package "<<subsystem>>\nStatic Assets" as Assets {
+            component "<<stylesheet>>\nstyle.css" as CSS
+            component "<<stylesheet>>\ngalaxy.css" as GalaxyCSS
+            component "<<script>>\ngalaxy.js" as GalaxyJS
+        }
+        
+        ' Asset dependencies
+        Base ..> CSS : <<uses>>
+        Base ..> GalaxyCSS : <<uses>>
+        Base ..> GalaxyJS : <<uses>>
+    }
+    
+    ' =========================================================================
+    ' APPLICATION LAYER
+    ' =========================================================================
+    package "<<layer>>\nApplication Layer" as AL {
+        
+        component "<<controller>>\napp.py" as App {
+            ' Provided Interfaces
+            interface "HTTP Routes" as IRoutes
+            interface "REST API" as IRestAPI
+            
+            ' Required Interfaces
+            port "forecast" as PForecast
+            port "data" as PData
+        }
+        
+        App - IRoutes
+        App - IRestAPI
+    }
+    
+    ' =========================================================================
+    ' BUSINESS LOGIC LAYER
+    ' =========================================================================
+    package "<<layer>>\nBusiness Logic Layer" as BLL {
+        
+        component "<<service>>\nforecast.py" as ForecastModule {
+            ' Provided Interfaces
+            interface "IForecastEngine" as IFEngine
+            interface "IDataFetcher" as IFetcher
+            
+            ' Required Interfaces
+            port "external_api" as PExtAPI
+        }
+        
+        ForecastModule - IFEngine
+        ForecastModule - IFetcher
+    }
+    
+    ' =========================================================================
+    ' DATA ACCESS LAYER
+    ' =========================================================================
+    package "<<layer>>\nData Access Layer" as DAL {
+        
+        component "<<repository>>\nmodels.py" as Models {
+            ' Provided Interfaces
+            interface "IWeatherRequest" as IWR
+            interface "IForecastResult" as IFR
+            interface "IHistoricalCache" as IHC
+            
+            ' Required Interfaces
+            port "database" as PDB
+        }
+        
+        Models - IWR
+        Models - IFR
+        Models - IHC
+    }
+    
+    ' =========================================================================
+    ' PERSISTENCE LAYER
+    ' =========================================================================
+    package "<<layer>>\nPersistence Layer" as PSL {
+        
+        database "<<database>>\nSQLite" as DB {
+            [weather_request] as TblWR
+            [forecast_result] as TblFR
+            [historical_cache] as TblHC
+        }
+    }
+}
 
-App --> ForecastModule
-App --> Models
-ForecastModule --> API
-Models --> DB
+' =============================================================================
+' INTERNAL DEPENDENCIES
+' =============================================================================
+
+' User to Presentation
+User --> IRoutes : HTTP/HTTPS
+
+' Presentation to Application
+Templates ..> App : <<rendered by>>
+
+' Application to Business Logic
+App::PForecast --> IFEngine : <<delegates>>
+
+' Application to Data Access
+App::PData --> IWR : <<uses>>
+App::PData --> IFR : <<uses>>
+
+' Business Logic to Data Access
+ForecastModule ..> IWR : <<creates>>
+ForecastModule ..> IFR : <<creates>>
+ForecastModule ..> IHC : <<caches>>
+
+' Data Access to Persistence
+Models::PDB --> DB : <<SQL>>
+
+' Business Logic to External
+ForecastModule::PExtAPI --> IAPI : <<REST/JSON>>
+
+' =============================================================================
+' DEPLOYMENT NOTES
+' =============================================================================
+note right of App
+  **Flask Framework**
+  - WSGI Application
+  - Port: 5000
+  - Debug mode: dev only
+end note
+
+note right of ForecastModule
+  **Core Services:**
+  - WeatherDataFetcher
+  - ForecastEngine
+  
+  **Algorithms:**
+  - Moving Average
+  - Linear Trend
+end note
+
+note bottom of DB
+  **Database File:**
+  database.db
+  
+  **Tables:**
+  - weather_request
+  - forecast_result
+  - historical_cache
+end note
+
+note top of ExtAPI
+  **WeatherAPI.com**
+  - Free tier: 1M calls/month
+  - Rate limit: 1 call/sec
+  - Endpoints: current, forecast, history
+end note
+
+' =============================================================================
+' LEGEND
+' =============================================================================
+legend bottom right
+  |= Symbol |= Meaning |
+  | <<controller>> | Route handlers |
+  | <<service>> | Business logic |
+  | <<repository>> | Data access |
+  | <<template>> | View template |
+  | ---> | Dependency |
+  | - | Provides interface |
+endlegend
 
 @enduml
