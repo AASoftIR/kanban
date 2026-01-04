@@ -1,27 +1,31 @@
 
 @startuml UseCase
-!theme plain
+' Rational Rose-like styling (classic UML look)
+skinparam monochrome true
+skinparam shadowing false
+skinparam BackgroundColor white
+skinparam DefaultFontName Arial
+skinparam PackageStyle rectangle
 
 left to right direction
-skinparam packageStyle rectangle
 
 actor User
 
 rectangle "Galaxy Weather System" {
-    usecase "Enter Location" as UC1
-    usecase "Upload JSON Data" as UC2
-    usecase "Request Forecast" as UC3
-    usecase "View Forecast Result" as UC4
-    usecase "View Forecast History" as UC5
+    usecase "Enter Location" as UC_EnterLocation
+    usecase "Upload JSON Data" as UC_UploadJson
+    usecase "Request Forecast" as UC_RequestForecast
+    usecase "View Forecast Result" as UC_ViewForecast
+    usecase "View Forecast History" as UC_ViewHistory
 }
 
-User --> UC1
-User --> UC2
-User --> UC3
-User --> UC4
-User --> UC5
+User --> UC_EnterLocation
+User --> UC_UploadJson
+User --> UC_RequestForecast
+User --> UC_ViewForecast
+User --> UC_ViewHistory
 
-UC3 ..> UC1 : <<include>>
-UC3 ..> UC4 : <<include>>
+UC_RequestForecast ..> UC_EnterLocation : <<include>>
+UC_RequestForecast ..> UC_ViewForecast : <<include>>
 
 @enduml

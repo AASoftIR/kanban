@@ -1,6 +1,10 @@
 
 @startuml SequenceDiagram
-!theme plain
+' Rational Rose-like styling (classic UML look)
+skinparam monochrome true
+skinparam shadowing false
+skinparam BackgroundColor white
+skinparam DefaultFontName Arial
 
 actor User
 participant Browser

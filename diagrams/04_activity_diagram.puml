@@ -1,10 +1,16 @@
 @startuml ActivityDiagram
-!theme plain
+skinparam monochrome true
+skinparam shadowing false
+skinparam BackgroundColor white
+skinparam DefaultFontName Arial
 
 start
 
-:User Enters Location
-or Uploads JSON;
+if (Input method?) then (Location)
+    :Enter Location;
+else (JSON)
+    :Upload JSON Data;
+endif
 
 :Validate Input;
 

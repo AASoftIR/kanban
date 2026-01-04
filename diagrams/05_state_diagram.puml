@@ -1,6 +1,10 @@
 
 @startuml StateDiagram
-!theme plain
+' Rational Rose-like styling (classic UML look)
+skinparam monochrome true
+skinparam shadowing false
+skinparam BackgroundColor white
+skinparam DefaultFontName Arial
 
 [*] --> Created : Request submitted
 

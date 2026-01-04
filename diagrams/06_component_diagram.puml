@@ -1,6 +1,11 @@
 
 @startuml ComponentDiagram
-!theme plain
+' Rational Rose-like styling (classic UML look)
+skinparam monochrome true
+skinparam shadowing false
+skinparam BackgroundColor white
+skinparam DefaultFontName Arial
+skinparam PackageStyle rectangle
 
 package "Galaxy Weather Application" {
     

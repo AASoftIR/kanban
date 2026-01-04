@@ -1,7 +1,11 @@
 
 @startuml ClassDiagram
-!theme plain
-
+' Rational Rose-like styling (classic UML look)
+skinparam monochrome true
+skinparam shadowing false
+skinparam BackgroundColor white
+skinparam DefaultFontName Arial
+skinparam classAttributeIconSize 0
 
 class WeatherRequest {
     - id: int
@@ -53,7 +57,7 @@ class ForecastResult {
     + {static} get_by_request_id(id): ForecastResult
 }
 
-ForecastEngine --> WeatherDataFetcher : uses
-ForecastResult --> WeatherRequest : belongs to
+ForecastEngine ..> WeatherDataFetcher : uses
+ForecastResult "0..*" --> "1" WeatherRequest : belongs to
 
 @enduml
