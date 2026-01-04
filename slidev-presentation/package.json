@@ -1,0 +1,25 @@
+{
+  "name": "galaxy-weather-presentation",
+  "version": "1.0.0",
+  "description": "Galaxy Weather - Software Engineering Presentation",
+  "scripts": {
+    "dev": "slidev",
+    "build": "slidev build",
+    "export:pdf": "slidev export --format pdf",
+    "export:pptx": "slidev export --format pptx"
+  },
+  "keywords": [
+    "slidev",
+    "presentation",
+    "galaxy-weather"
+  ],
+  "author": "Asal Hadian & Sadaf Bagherian",
+  "license": "MIT",
+  "dependencies": {
+    "@slidev/cli": "^52.11.1",
+    "@slidev/theme-seriph": "^0.25.0"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.57.0"
+  }
+}

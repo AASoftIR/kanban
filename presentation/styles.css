@@ -96,14 +96,23 @@
 }
 
 .reveal h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
     color: var(--text-primary);
 }
 
 .reveal h2 i {
     margin-right: 0.5rem;
     color: var(--accent-cyan);
+}
+
+/* Prevent overflow on all slides */
+.reveal section {
+    overflow: hidden;
+}
+
+.reveal section > * {
+    max-width: 100%;
 }
 
 .reveal p {
@@ -140,25 +149,30 @@
     margin-bottom: 1.5rem;
 }
 
-/* ==================== Export Button ==================== */
+/* ==================== Export Buttons ==================== */
 
-.export-btn {
+.export-buttons {
     position: fixed;
     top: 20px;
     right: 20px;
     z-index: 1000;
-    padding: 12px 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.export-btn {
+    padding: 10px 16px;
     background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark));
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
@@ -172,8 +186,23 @@
     transform: translateY(0);
 }
 
+.export-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.export-btn.ppt-btn {
+    background: linear-gradient(135deg, #d35400, #e74c3c);
+    box-shadow: 0 4px 15px rgba(211, 84, 0, 0.4);
+}
+
+.export-btn.ppt-btn:hover {
+    box-shadow: 0 6px 20px rgba(211, 84, 0, 0.6);
+}
+
 .export-btn i {
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 /* ==================== Title Slide ==================== */
@@ -198,7 +227,7 @@
 }
 
 .main-title {
-    font-size: 4rem !important;
+    font-size: 3rem !important;
     background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -232,19 +261,20 @@
 
 .toc-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-top: 1rem;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.6rem;
+    margin-top: 0.8rem;
 }
 
 .toc-item {
     background: var(--glass-bg);
-    padding: 1rem;
-    border-radius: 8px;
+    padding: 0.6rem;
+    border-radius: 6px;
     border: 1px solid var(--glass-border);
     text-align: left;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     transition: all 0.3s ease;
+    overflow: hidden;
 }
 
 .toc-item:hover {
@@ -256,14 +286,14 @@
     display: inline-block;
     background: var(--accent-purple);
     color: white;
-    width: 28px;
-    height: 28px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     text-align: center;
-    line-height: 28px;
-    font-size: 0.8rem;
+    line-height: 20px;
+    font-size: 0.65rem;
     font-weight: 600;
-    margin-right: 0.5rem;
+    margin-right: 0.3rem;
 }
 
 /* ==================== Mission Grid ==================== */
@@ -310,24 +340,27 @@
 
 .overview-content {
     display: grid;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .mission-statement {
     background: var(--glass-bg);
-    padding: 1.5rem;
-    border-radius: 12px;
-    border-left: 4px solid var(--accent-cyan);
+    padding: 1rem;
+    border-radius: 10px;
+    border-left: 3px solid var(--accent-cyan);
+    overflow: hidden;
 }
 
 .mission-statement h3 {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     color: var(--accent-cyan);
+    font-size: 0.9rem;
 }
 
 .mission-statement p {
-    font-size: 0.95rem;
+    font-size: 0.75rem;
     color: var(--text-secondary);
+    line-height: 1.4;
 }
 
 .value-props {
@@ -366,25 +399,31 @@
 
 .feature-card {
     background: var(--glass-bg);
-    padding: 1.2rem;
-    border-radius: 12px;
+    padding: 0.8rem;
+    border-radius: 10px;
     border: 1px solid var(--glass-border);
+    overflow: hidden;
 }
 
 .feature-card h4 {
     color: var(--accent-cyan);
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.85rem;
 }
 
 .feature-card h4 i {
-    margin-right: 0.5rem;
+    margin-right: 0.4rem;
 }
 
 .feature-card p {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 .feature-tag {
@@ -499,37 +538,105 @@
     opacity: 1;
 }
 
+/* ==================== Kanban Explanation ==================== */
+
+.kanban-explanation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    text-align: left;
+}
+
+.kanban-benefits {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+}
+
+.kanban-benefits h4 {
+    color: var(--accent-cyan);
+    margin-bottom: 0.6rem;
+    font-size: 0.85rem;
+}
+
+.kanban-benefits ul {
+    list-style: none;
+    padding: 0;
+}
+
+.kanban-benefits li {
+    margin: 0.4rem 0;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.kanban-benefits li i {
+    color: var(--success);
+    margin-right: 0.5rem;
+}
+
+.methodology-compare {
+    background: var(--glass-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.methodology-compare h4 {
+    color: var(--accent-cyan);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.methodology-compare table {
+    width: 100%;
+    font-size: 0.8rem;
+}
+
+.methodology-compare th.highlight {
+    background: var(--accent-purple);
+    color: white;
+}
+
+.methodology-compare .good {
+    color: var(--success);
+    font-weight: 600;
+}
+
 /* ==================== NFR Grid ==================== */
 
 .nfr-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
 }
 
 .nfr-card {
     background: var(--glass-bg);
-    padding: 1rem;
+    padding: 0.6rem;
     border-radius: 8px;
     border: 1px solid var(--glass-border);
+    overflow: hidden;
 }
 
 .nfr-card h4 {
     color: var(--accent-cyan);
-    font-size: 0.9rem;
-    margin-bottom: 0.8rem;
+    font-size: 0.75rem;
+    margin-bottom: 0.4rem;
 }
 
 .nfr-card h4 i {
-    margin-right: 0.3rem;
+    margin-right: 0.2rem;
 }
 
 .nfr-card ul {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
 }
 
 .nfr-card li {
-    padding: 0.2rem 0;
+    padding: 0.1rem 0;
     color: var(--text-secondary);
 }
 
@@ -792,6 +899,7 @@
 .must { color: var(--danger); font-weight: 600; }
 .should { color: var(--warning); font-weight: 600; }
 .could { color: var(--success); font-weight: 600; }
+.complete { color: var(--success); font-weight: 600; }
 
 /* ==================== Comparison Table ==================== */
 
@@ -947,8 +1055,9 @@
 
 .diagram-info h4 {
     color: var(--accent-cyan);
-    margin-bottom: 0.5rem;
-    margin-top: 1rem;
+    margin-bottom: 0.3rem;
+    margin-top: 0.6rem;
+    font-size: 0.8rem;
 }
 
 .diagram-info h4:first-child {
@@ -956,14 +1065,16 @@
 }
 
 .diagram-info p {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
 }
 
 .diagram-info li {
-    font-size: 0.85rem;
-    padding: 0.3rem 0;
+    font-size: 0.7rem;
+    padding: 0.15rem 0;
+    line-height: 1.3;
 }
 
 .diagram-info ol {
@@ -1383,13 +1494,203 @@
     50% { opacity: 0.5; }
 }
 
+/* ==================== Additional Styles for Complete Presentation ==================== */
+
+.intro-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    text-align: left;
+}
+
+.objectives-box {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+}
+
+.objectives-box h3 {
+    color: var(--accent-purple);
+    margin-bottom: 0.6rem;
+    font-size: 0.9rem;
+}
+
+.objectives-box ul {
+    list-style: none;
+    padding: 0;
+}
+
+.objectives-box li {
+    margin: 0.35rem 0;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    line-height: 1.3;
+}
+
+.objectives-box li i {
+    color: var(--success);
+    margin-right: 0.4rem;
+    font-size: 0.65rem;
+}
+
+.problem-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    text-align: left;
+}
+
+.problem-box, .solution-box {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.problem-box {
+    border-left: 3px solid var(--danger);
+}
+
+.solution-box {
+    border-left: 3px solid var(--success);
+}
+
+.problem-box h3, .solution-box h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.problem-box h3 {
+    color: var(--danger);
+}
+
+.solution-box h3 {
+    color: var(--success);
+}
+
+.problem-box ul, .solution-box ul {
+    padding-left: 1rem;
+    list-style: disc;
+}
+
+.problem-box li, .solution-box li {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin: 0.25rem 0;
+    line-height: 1.3;
+}
+
+.algorithm-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.8rem;
+}
+
+.algo-detail {
+    background: var(--glass-bg);
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    text-align: left;
+    overflow: hidden;
+}
+
+.algo-detail h4 {
+    color: var(--accent-cyan);
+    margin-bottom: 0.3rem;
+    font-size: 0.8rem;
+}
+
+.algo-detail p {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+}
+
+.algo-detail code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    padding: 0.4rem;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.65rem;
+    color: var(--accent-cyan);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.day-range-table {
+    margin: 1rem 0;
+}
+
+.day-range-table table {
+    width: 100%;
+}
+
+.important-note {
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid var(--warning);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.important-note p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.important-note strong {
+    color: var(--warning);
+}
+
+.section-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.uml-note {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+/* Close modal span fix */
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 10000;
+}
+
+.close-modal:hover {
+    color: var(--accent-cyan);
+}
+
 /* ==================== Responsive ==================== */
 
 @media (max-width: 900px) {
     .problem-grid,
     .team-grid,
     .dual-diagram,
-    .hybrid-comparison {
+    .hybrid-comparison,
+    .intro-content,
+    .problem-content,
+    .algorithm-details {
         grid-template-columns: 1fr;
     }
     
@@ -1418,10 +1719,195 @@
     }
 }
 
-/* ==================== Print/PDF ==================== */
+/* ==================== Global Overflow Prevention ==================== */
+
+.reveal .slides section {
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.reveal .slides section > div,
+.reveal .slides section > p,
+.reveal .slides section > ul,
+.reveal .slides section > table {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Text truncation helpers */
+.truncate-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ==================== Screenshot Container ==================== */
+
+.screenshot-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0.5rem 0;
+}
+
+.screenshot-container img {
+    max-width: 85%;
+    max-height: 320px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 2px solid var(--glass-border);
+    cursor: pointer;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.screenshot-container img:hover {
+    transform: scale(1.02);
+    border-color: var(--accent-cyan);
+}
+
+.img-hint {
+    font-size: 0.7rem;
+    color: var(--accent-cyan);
+    margin-top: 0.3rem;
+    opacity: 0.7;
+}
+
+.screenshot-note {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    text-align: center;
+    line-height: 1.3;
+    max-width: 90%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* ==================== Clickable Images ==================== */
+
+.clickable-img {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.clickable-img:hover {
+    transform: scale(1.03);
+}
+
+/* ==================== Diagram Layout (Side-by-Side) ==================== */
+
+.diagram-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+
+.diagram-desc {
+    text-align: left;
+    overflow: hidden;
+}
+
+.diagram-desc h4 {
+    color: var(--accent-cyan);
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.2rem;
+}
+
+.diagram-desc h4:first-child {
+    margin-top: 0;
+}
+
+.diagram-desc p {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.diagram-desc ul, .diagram-desc ol {
+    margin: 0;
+    padding-left: 0.8rem;
+    font-size: 0.6rem;
+}
+
+.diagram-desc li {
+    color: var(--text-secondary);
+    margin: 0.1rem 0;
+    line-height: 1.3;
+}
+
+/* ==================== Print/PDF Mode ==================== */
 
 @media print {
-    .export-btn {
-        display: none;
+    .export-buttons,
+    .image-modal,
+    .img-hint,
+    .click-hint {
+        display: none !important;
     }
+    
+    .reveal {
+        width: 100%;
+        height: auto;
+    }
+    
+    .reveal .slides {
+        width: 100% !important;
+        height: auto !important;
+    }
+    
+    .reveal .slides section {
+        page-break-after: always;
+        page-break-inside: avoid;
+        height: auto !important;
+        min-height: 0 !important;
+        padding: 20px !important;
+    }
+}
+
+/* Reveal.js print-pdf mode */
+html.print-pdf {
+    width: 100%;
+}
+
+html.print-pdf .export-buttons,
+html.print-pdf .image-modal,
+html.print-pdf .img-hint {
+    display: none !important;
+}
+
+html.print-pdf .reveal {
+    width: 100%;
+}
+
+html.print-pdf .reveal .slides {
+    width: 100%;
+}
+
+html.print-pdf .reveal .slides section {
+    background: var(--primary-bg);
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+html.print-pdf .reveal .slides section[data-background-gradient] {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #2d1b4e 100%) !important;
 }

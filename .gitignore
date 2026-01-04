@@ -43,3 +43,6 @@ dist/
 # Temporary files
 *.tmp
 *.temp
+*.zip
+node_modules/
+.cache/
