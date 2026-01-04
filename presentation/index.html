@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxy Weather - Presentation</title>
+    <title>Galaxy Weather - Project Presentation</title>
     
     <!-- Reveal.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
@@ -19,6 +19,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Fullscreen Image Modal -->
+    <div id="imageModal" class="image-modal" onclick="closeModal()">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div class="modal-caption" id="modalCaption"></div>
+    </div>
+
     <!-- Export Button -->
     <button id="exportBtn" class="export-btn" title="Export to PowerPoint">
         <i class="fas fa-file-powerpoint"></i> Export PPTX
@@ -46,28 +53,74 @@
                 </div>
             </section>
 
-            <!-- Slide 2: Table of Contents -->
+            <!-- Slide 2: Mission Overview -->
             <section>
-                <h2><i class="fas fa-list"></i> Agenda</h2>
-                <div class="toc-grid">
-                    <div class="toc-item"><span class="toc-num">01</span> Introduction & Problem</div>
-                    <div class="toc-item"><span class="toc-num">02</span> Project Objectives</div>
-                    <div class="toc-item"><span class="toc-num">03</span> Kanban Methodology</div>
-                    <div class="toc-item"><span class="toc-num">04</span> System Requirements</div>
-                    <div class="toc-item"><span class="toc-num">05</span> UML Diagrams</div>
-                    <div class="toc-item"><span class="toc-num">06</span> System Architecture</div>
-                    <div class="toc-item"><span class="toc-num">07</span> Implementation</div>
-                    <div class="toc-item"><span class="toc-num">08</span> Demo & Testing</div>
-                    <div class="toc-item"><span class="toc-num">09</span> Conclusion</div>
+                <h2><i class="fas fa-rocket"></i> Mission Overview</h2>
+                <p class="section-intro">Navigate through our software engineering journey</p>
+                <div class="mission-grid">
+                    <div class="mission-item"><span class="mission-num">01</span><strong>Project Introduction</strong><br><small>Objectives & scope</small></div>
+                    <div class="mission-item"><span class="mission-num">02</span><strong>Requirements Analysis</strong><br><small>Functional & non-functional specs</small></div>
+                    <div class="mission-item"><span class="mission-num">03</span><strong>System Architecture</strong><br><small>Technical blueprint & patterns</small></div>
+                    <div class="mission-item"><span class="mission-num">04</span><strong>UI/UX Design</strong><br><small>User interface & experience</small></div>
+                    <div class="mission-item"><span class="mission-num">05</span><strong>Implementation</strong><br><small>Code structure & logic</small></div>
+                    <div class="mission-item"><span class="mission-num">06</span><strong>Testing & QA</strong><br><small>Quality assurance strategy</small></div>
+                    <div class="mission-item"><span class="mission-num">07</span><strong>Project Timeline</strong><br><small>Schedule & milestones</small></div>
+                    <div class="mission-item"><span class="mission-num">08</span><strong>Team Structure</strong><br><small>Members & roles</small></div>
+                    <div class="mission-item"><span class="mission-num">09</span><strong>Future Work</strong><br><small>Conclusions & next steps</small></div>
                 </div>
             </section>
 
-            <!-- Slide 3: Problem Statement -->
+            <!-- Slide 3: Project Overview -->
+            <section>
+                <h2><i class="fas fa-globe"></i> Project Overview: Galaxy Weather</h2>
+                <div class="overview-content">
+                    <div class="mission-statement">
+                        <h3>🎯 Mission Statement</h3>
+                        <p>Galaxy Weather is an intelligent web application designed to deliver accurate, real-time weather forecasting through a modern, intuitive interface. Our mission is to make weather data accessible, understandable, and visually engaging for users worldwide.</p>
+                    </div>
+                    <div class="value-props">
+                        <div class="value-item"><i class="fas fa-sync-alt"></i><strong>Real-Time Data</strong><br>Live weather updates with 15-minute refresh intervals</div>
+                        <div class="value-item"><i class="fas fa-globe-americas"></i><strong>Global Coverage</strong><br>Weather information for any location worldwide</div>
+                        <div class="value-item"><i class="fas fa-bell"></i><strong>Smart Alerts</strong><br>Intelligent notifications for weather changes</div>
+                        <div class="value-item"><i class="fas fa-mobile-alt"></i><strong>Responsive Design</strong><br>Optimized for all devices</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 4: Core Features -->
+            <section>
+                <h2><i class="fas fa-star"></i> Core Features & Functionality</h2>
+                <p class="section-intro">A comprehensive weather platform with advanced capabilities</p>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h4><i class="fas fa-cloud-sun"></i> Real-Time Weather Data</h4>
+                        <p>Integration with multiple weather APIs providing current conditions including temperature, humidity, wind speed, pressure, and visibility.</p>
+                        <span class="feature-tag">15-minute refresh</span>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-calendar-week"></i> 5-Day Weather Forecast</h4>
+                        <p>Extended forecast with hourly breakdowns for 48 hours, including precipitation probability, UV index, and feels-like temperature.</p>
+                        <span class="feature-tag">Hourly & daily predictions</span>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-search-location"></i> Location-Based Search</h4>
+                        <p>Search by city name, ZIP code, or coordinates. Auto-detection with GPS and saved favorite locations.</p>
+                        <span class="feature-tag">Global coverage</span>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-chart-line"></i> Trend Analysis</h4>
+                        <p>Intelligent trend analysis using historical data to improve forecast accuracy with our hybrid algorithm.</p>
+                        <span class="feature-tag">ML-enhanced</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 5: Problem Statement -->
             <section>
                 <h2><i class="fas fa-exclamation-triangle"></i> Problem Statement</h2>
                 <div class="problem-grid">
                     <div class="problem-card bad">
-                        <h3>Existing Apps Lack</h3>
+                        <h3>❌ Existing Apps Lack</h3>
                         <ul>
                             <li><i class="fas fa-times"></i> Limited input format support</li>
                             <li><i class="fas fa-times"></i> No custom data analysis</li>
@@ -77,7 +130,7 @@
                         </ul>
                     </div>
                     <div class="problem-card good">
-                        <h3>Galaxy Weather Provides</h3>
+                        <h3>✅ Galaxy Weather Provides</h3>
                         <ul>
                             <li><i class="fas fa-check"></i> Multi-format location input</li>
                             <li><i class="fas fa-check"></i> JSON file upload & analysis</li>
@@ -89,40 +142,24 @@
                 </div>
             </section>
 
-            <!-- Slide 4: Project Objectives -->
+            <!-- ==================== SECTION 2: OUR JOURNEY ==================== -->
+
+            <!-- Slide 6: Our Development Journey -->
             <section>
-                <h2><i class="fas fa-bullseye"></i> Project Objectives</h2>
-                <div class="objectives-list">
-                    <div class="objective-item">
-                        <span class="obj-num">1</span>
-                        <span>Build a functional weather forecasting web application</span>
-                    </div>
-                    <div class="objective-item">
-                        <span class="obj-num">2</span>
-                        <span>Implement intelligent forecasting algorithms with trend analysis</span>
-                    </div>
-                    <div class="objective-item">
-                        <span class="obj-num">3</span>
-                        <span>Create an engaging, modern user interface</span>
-                    </div>
-                    <div class="objective-item">
-                        <span class="obj-num">4</span>
-                        <span>Apply software engineering best practices</span>
-                    </div>
-                    <div class="objective-item">
-                        <span class="obj-num">5</span>
-                        <span>Document with comprehensive UML diagrams</span>
-                    </div>
-                    <div class="objective-item">
-                        <span class="obj-num">6</span>
-                        <span>Use Kanban methodology for project management</span>
-                    </div>
+                <h2><i class="fas fa-road"></i> Our Development Journey</h2>
+                <p class="section-intro">How we built Galaxy Weather using Kanban methodology</p>
+                <div class="journey-intro">
+                    <p>As a <strong>2-person team</strong>, we needed an agile methodology that was flexible, lightweight, and perfect for continuous delivery. Here's our story of how we went from idea to a fully functional weather application...</p>
+                </div>
+                <div class="journey-stats">
+                    <div class="stat-item"><span class="stat-number">5</span><span class="stat-label">Weeks</span></div>
+                    <div class="stat-item"><span class="stat-number">24</span><span class="stat-label">Tasks Completed</span></div>
+                    <div class="stat-item"><span class="stat-number">7</span><span class="stat-label">UML Diagrams</span></div>
+                    <div class="stat-item"><span class="stat-number">100%</span><span class="stat-label">Requirements Met</span></div>
                 </div>
             </section>
 
-            <!-- ==================== SECTION 2: KANBAN METHODOLOGY ==================== -->
-            
-            <!-- Slide 5: Why Kanban -->
+            <!-- Slide 7: Why Kanban -->
             <section>
                 <h2><i class="fas fa-columns"></i> Why We Chose Kanban</h2>
                 <div class="comparison-table">
@@ -166,7 +203,7 @@
                 <p class="note">Perfect for our 2-person team with continuous delivery focus!</p>
             </section>
 
-            <!-- Slide 6: Kanban Board Structure -->
+            <!-- Slide 8: Kanban Board Structure -->
             <section>
                 <h2><i class="fas fa-trello"></i> Our 5-Column Kanban Board</h2>
                 <div class="kanban-board">
@@ -202,7 +239,84 @@
                 </div>
             </section>
 
-            <!-- Slide 7: Team Distribution -->
+            <!-- Slide 9: Trello Week 1 -->
+            <section>
+                <h2><i class="fas fa-flag-checkered"></i> Week 1: Project Kickoff</h2>
+                <p class="journey-text">We started by setting up our Trello board and defining all the tasks in our backlog. Each card represented a feature or requirement that we needed to implement.</p>
+                <div class="trello-showcase">
+                    <div class="trello-item" onclick="openModal('../files/1.png', 'Week 1: Initial Board Setup - Creating backlog items')">
+                        <img src="../files/1.png" alt="Trello Week 1" class="trello-thumb">
+                        <p>Initial Board Setup</p>
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                    <div class="trello-item" onclick="openModal('../files/2.png', 'Week 1: Task Prioritization - Organizing by priority')">
+                        <img src="../files/2.png" alt="Trello Week 1 Progress" class="trello-thumb">
+                        <p>Task Prioritization</p>
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 10: Trello Week 2-3 -->
+            <section>
+                <h2><i class="fas fa-code"></i> Week 2-3: Development Phase</h2>
+                <p class="journey-text">During the core development phase, we moved tasks from "To Do" to "In Progress". Asal focused on backend while Sadaf worked on frontend. We kept WIP limits to stay focused.</p>
+                <div class="trello-showcase triple">
+                    <div class="trello-item" onclick="openModal('../files/3.png', 'Week 2: Backend Development - API integration started')">
+                        <img src="../files/3.png" alt="Trello Week 2" class="trello-thumb">
+                        <p>Backend Development</p>
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                    <div class="trello-item" onclick="openModal('../files/4.png', 'Week 2-3: Frontend Development - UI components built')">
+                        <img src="../files/4.png" alt="Trello Week 2-3" class="trello-thumb">
+                        <p>Frontend Development</p>
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                    <div class="trello-item" onclick="openModal('../files/5.png', 'Week 3: Integration - Connecting frontend to backend')">
+                        <img src="../files/5.png" alt="Trello Week 3" class="trello-thumb">
+                        <p>Integration Phase</p>
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 11: Trello Week 4 -->
+            <section>
+                <h2><i class="fas fa-vial"></i> Week 4: Testing & Documentation</h2>
+                <p class="journey-text">Tasks moved to "Testing" column for review. We created UML diagrams, tested all features, and documented our work. Bug fixes were tracked as new cards.</p>
+                <div class="trello-showcase">
+                    <div class="trello-item" onclick="openModal('../files/6.png', 'Week 4: Testing Phase - All features under review')">
+                        <img src="../files/6.png" alt="Trello Week 4" class="trello-thumb">
+                        <p>Testing Phase</p>
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                    <div class="trello-item" onclick="openModal('../files/7.png', 'Week 4: Documentation - UML diagrams created')">
+                        <img src="../files/7.png" alt="Trello Documentation" class="trello-thumb">
+                        <p>Documentation</p>
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 12: Trello Week 5 -->
+            <section>
+                <h2><i class="fas fa-trophy"></i> Week 5: Project Completion</h2>
+                <p class="journey-text">All tasks moved to "Done"! We completed the project on time with all requirements met. The Kanban approach helped us maintain steady progress throughout.</p>
+                <div class="trello-showcase">
+                    <div class="trello-item" onclick="openModal('../files/8.png', 'Week 5: Final Review - Last checks before completion')">
+                        <img src="../files/8.png" alt="Trello Final Review" class="trello-thumb">
+                        <p>Final Review</p>
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                    <div class="trello-item" onclick="openModal('../files/9.png', 'Week 5: All Done! - 100% tasks completed')">
+                        <img src="../files/9.png" alt="Trello Complete" class="trello-thumb">
+                        <p>🎉 All Done!</p>
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 13: Team Distribution -->
             <section>
                 <h2><i class="fas fa-users"></i> Team Task Distribution</h2>
                 <div class="team-grid">
@@ -211,11 +325,11 @@
                         <h3>Asal Hadian</h3>
                         <p class="role">Backend Developer</p>
                         <ul>
-                            <li>API analysis & integration</li>
+                            <li>API analysis & integration (WeatherAPI)</li>
                             <li>Database design (SQLite)</li>
-                            <li>Forecasting algorithm</li>
-                            <li>Flask application</li>
-                            <li>Error handling</li>
+                            <li>Forecasting algorithm implementation</li>
+                            <li>Flask application routes</li>
+                            <li>Error handling & validation</li>
                         </ul>
                     </div>
                     <div class="team-card">
@@ -224,63 +338,79 @@
                         <p class="role">Frontend & Documentation</p>
                         <ul>
                             <li>Galaxy UI/UX design</li>
-                            <li>HTML/CSS templates</li>
+                            <li>HTML/CSS templates (Jinja2)</li>
                             <li>JavaScript animations</li>
-                            <li>UML diagrams</li>
-                            <li>Report writing</li>
+                            <li>7 comprehensive UML diagrams</li>
+                            <li>Project report & presentation</li>
                         </ul>
                     </div>
                 </div>
             </section>
 
-            <!-- Slide 8: Trello Screenshots -->
-            <section>
-                <h2><i class="fas fa-camera"></i> Trello Board - Project Progress</h2>
-                <div class="screenshot-grid">
-                    <div class="screenshot-item">
-                        <div class="screenshot-placeholder" data-img="../files/1.png">
-                            <img src="../files/1.png" alt="Trello Initial" onerror="this.parentElement.classList.add('no-image')">
-                        </div>
-                        <p>Initial Setup</p>
-                    </div>
-                    <div class="screenshot-item">
-                        <div class="screenshot-placeholder" data-img="../files/2.png">
-                            <img src="../files/2.png" alt="Trello Progress" onerror="this.parentElement.classList.add('no-image')">
-                        </div>
-                        <p>Mid-Project</p>
-                    </div>
-                    <div class="screenshot-item">
-                        <div class="screenshot-placeholder" data-img="../files/3.png">
-                            <img src="../files/3.png" alt="Trello Final" onerror="this.parentElement.classList.add('no-image')">
-                        </div>
-                        <p>Final State</p>
-                    </div>
-                </div>
-            </section>
-
             <!-- ==================== SECTION 3: REQUIREMENTS ==================== -->
-            
-            <!-- Slide 9: Functional Requirements -->
+
+            <!-- Slide 14: Functional Requirements -->
             <section>
                 <h2><i class="fas fa-clipboard-list"></i> Functional Requirements</h2>
+                <p class="section-intro">Core system functionalities and specifications</p>
                 <div class="requirements-table">
                     <table>
                         <thead>
-                            <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                            <tr><th>ID</th><th>Requirement</th><th>Description</th><th>Priority</th><th>Status</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>FR-01</td><td>Multi-format location input</td><td class="must">Must Have</td></tr>
-                            <tr><td>FR-02</td><td>Fetch weather from external API</td><td class="must">Must Have</td></tr>
-                            <tr><td>FR-03</td><td>JSON file upload for custom data</td><td class="should">Should Have</td></tr>
-                            <tr><td>FR-04</td><td>Trend-based forecast calculation</td><td class="must">Must Have</td></tr>
-                            <tr><td>FR-05</td><td>Store forecasts in database</td><td class="must">Must Have</td></tr>
-                            <tr><td>FR-06</td><td>View forecast history</td><td class="should">Should Have</td></tr>
+                            <tr><td>FR-001</td><td>Multi-format Location Input</td><td>Accept city name, coordinates, or ZIP code</td><td class="must">High</td><td class="pass">✓</td></tr>
+                            <tr><td>FR-002</td><td>Weather Data Retrieval</td><td>Fetch current weather from external APIs</td><td class="must">High</td><td class="pass">✓</td></tr>
+                            <tr><td>FR-003</td><td>JSON File Upload</td><td>Allow custom data analysis via JSON upload</td><td class="should">Medium</td><td class="pass">✓</td></tr>
+                            <tr><td>FR-004</td><td>Trend-Based Forecast</td><td>Calculate predictions using historical trends</td><td class="must">High</td><td class="pass">✓</td></tr>
+                            <tr><td>FR-005</td><td>Database Storage</td><td>Store all forecasts in SQLite database</td><td class="must">High</td><td class="pass">✓</td></tr>
+                            <tr><td>FR-006</td><td>Forecast History</td><td>View previous forecast requests and results</td><td class="should">Medium</td><td class="pass">✓</td></tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- Slide 10: Tech Stack -->
+            <!-- Slide 15: Non-Functional Requirements -->
+            <section>
+                <h2><i class="fas fa-cogs"></i> Non-Functional Requirements</h2>
+                <p class="section-intro">Quality attributes and system constraints</p>
+                <div class="nfr-grid">
+                    <div class="nfr-card">
+                        <h4><i class="fas fa-tachometer-alt"></i> Performance</h4>
+                        <ul>
+                            <li>Response time < 2 seconds</li>
+                            <li>Page load time < 3 seconds</li>
+                            <li>API calls < 500ms latency</li>
+                        </ul>
+                    </div>
+                    <div class="nfr-card">
+                        <h4><i class="fas fa-shield-alt"></i> Reliability</h4>
+                        <ul>
+                            <li>99.9% system uptime</li>
+                            <li>Automatic failover</li>
+                            <li>Graceful error handling</li>
+                        </ul>
+                    </div>
+                    <div class="nfr-card">
+                        <h4><i class="fas fa-lock"></i> Security</h4>
+                        <ul>
+                            <li>HTTPS encryption</li>
+                            <li>API key protection</li>
+                            <li>Input validation</li>
+                        </ul>
+                    </div>
+                    <div class="nfr-card">
+                        <h4><i class="fas fa-expand-arrows-alt"></i> Scalability</h4>
+                        <ul>
+                            <li>Horizontal scaling</li>
+                            <li>Cloud deployment ready</li>
+                            <li>Microservices ready</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 16: Tech Stack -->
             <section>
                 <h2><i class="fas fa-layer-group"></i> Technology Stack</h2>
                 <div class="tech-stack">
@@ -311,11 +441,11 @@
             </section>
 
             <!-- ==================== SECTION 4: UML DIAGRAMS ==================== -->
-            
-            <!-- Slide 11: UML Overview -->
+
+            <!-- Slide 17: UML Overview -->
             <section>
                 <h2><i class="fas fa-project-diagram"></i> UML Diagrams Overview</h2>
-                <p>7 comprehensive diagrams documenting our system:</p>
+                <p class="section-intro">7 comprehensive diagrams documenting our system architecture and behavior</p>
                 <div class="uml-list">
                     <div class="uml-item"><span>1</span> Use Case Diagram</div>
                     <div class="uml-item"><span>2</span> Class Diagram</div>
@@ -327,149 +457,198 @@
                 </div>
             </section>
 
-            <!-- Slide 12: Use Case Diagram -->
+            <!-- Slide 18: Use Case Diagram -->
             <section>
-                <h2><i class="fas fa-user-circle"></i> Use Case Diagram</h2>
+                <h2><i class="fas fa-user-circle"></i> 1. Use Case Diagram</h2>
                 <div class="diagram-container">
-                    <div class="diagram-image">
-                        <img src="../files/01_use_case_diagram.svg" alt="Use Case Diagram" onerror="this.parentElement.innerHTML='<div class=\'diagram-placeholder\'><i class=\'fas fa-image\'></i><p>01_use_case_diagram.svg</p></div>'">
+                    <div class="diagram-image" onclick="openModal('../files/01_use_case_diagram.svg', 'Use Case Diagram - System functionality from user perspective')">
+                        <img src="../files/01_use_case_diagram.svg" alt="Use Case Diagram">
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
                     </div>
                     <div class="diagram-info">
-                        <h4>Actors & Use Cases</h4>
+                        <h4>Purpose</h4>
+                        <p>Shows system functionality from the user's perspective, defining what actions users can perform.</p>
+                        <h4>Key Elements</h4>
                         <ul>
-                            <li><strong>User:</strong> Primary actor</li>
-                            <li>Enter Location</li>
-                            <li>Upload JSON Data</li>
-                            <li>Request Forecast</li>
-                            <li>View Results & History</li>
+                            <li><strong>Actor:</strong> User (primary)</li>
+                            <li><strong>UC1:</strong> Enter Location</li>
+                            <li><strong>UC2:</strong> Upload JSON Data</li>
+                            <li><strong>UC3:</strong> Request Forecast</li>
+                            <li><strong>UC4:</strong> View Forecast Result</li>
+                            <li><strong>UC5:</strong> View Forecast History</li>
                         </ul>
+                        <p class="diagram-note">UC3 includes UC1 and UC4 (dependency)</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Slide 13: Class Diagram -->
+            <!-- Slide 19: Class Diagram -->
             <section>
-                <h2><i class="fas fa-sitemap"></i> Class Diagram</h2>
+                <h2><i class="fas fa-sitemap"></i> 2. Class Diagram</h2>
                 <div class="diagram-container">
-                    <div class="diagram-image">
-                        <img src="../files/02_class_diagram.svg" alt="Class Diagram" onerror="this.parentElement.innerHTML='<div class=\'diagram-placeholder\'><i class=\'fas fa-image\'></i><p>02_class_diagram.svg</p></div>'">
+                    <div class="diagram-image" onclick="openModal('../files/02_class_diagram.svg', 'Class Diagram - System structure and class relationships')">
+                        <img src="../files/02_class_diagram.svg" alt="Class Diagram">
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
                     </div>
                     <div class="diagram-info">
+                        <h4>Purpose</h4>
+                        <p>Defines the structure of the system showing classes, attributes, methods, and relationships.</p>
                         <h4>Main Classes</h4>
                         <ul>
-                            <li><strong>WeatherRequest</strong> - User requests</li>
-                            <li><strong>WeatherDataFetcher</strong> - API client</li>
-                            <li><strong>ForecastEngine</strong> - Algorithm</li>
-                            <li><strong>ForecastResult</strong> - Results</li>
+                            <li><strong>WeatherRequest</strong> - Stores user requests with query, type, days, status</li>
+                            <li><strong>WeatherDataFetcher</strong> - API client for fetching weather data</li>
+                            <li><strong>ForecastEngine</strong> - Core algorithm for trend analysis</li>
+                            <li><strong>ForecastResult</strong> - Stores results with location and data</li>
                         </ul>
                     </div>
                 </div>
             </section>
 
-            <!-- Slide 14: Sequence Diagram -->
+            <!-- Slide 20: Sequence Diagram -->
             <section>
-                <h2><i class="fas fa-exchange-alt"></i> Sequence Diagram</h2>
+                <h2><i class="fas fa-exchange-alt"></i> 3. Sequence Diagram</h2>
                 <div class="diagram-container">
-                    <div class="diagram-image">
-                        <img src="../files/03_sequence_diagram.svg" alt="Sequence Diagram" onerror="this.parentElement.innerHTML='<div class=\'diagram-placeholder\'><i class=\'fas fa-image\'></i><p>03_sequence_diagram.svg</p></div>'">
+                    <div class="diagram-image" onclick="openModal('../files/03_sequence_diagram.svg', 'Sequence Diagram - Interaction flow for forecast request')">
+                        <img src="../files/03_sequence_diagram.svg" alt="Sequence Diagram">
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
                     </div>
                     <div class="diagram-info">
-                        <h4>Request Flow</h4>
+                        <h4>Purpose</h4>
+                        <p>Shows the interaction flow between components over time when processing a forecast request.</p>
+                        <h4>Flow Steps</h4>
                         <ol>
-                            <li>User enters location</li>
-                            <li>Flask creates request</li>
-                            <li>AJAX processing</li>
-                            <li>API data fetch</li>
-                            <li>Trend analysis</li>
-                            <li>Display results</li>
+                            <li>User enters location & days</li>
+                            <li>Browser sends POST to Flask</li>
+                            <li>Flask creates WeatherRequest in DB</li>
+                            <li>ForecastEngine fetches weather data</li>
+                            <li>Trend analysis & adjustments applied</li>
+                            <li>Results saved and displayed</li>
                         </ol>
                     </div>
                 </div>
             </section>
 
-            <!-- Slide 15: Activity Diagram -->
+            <!-- Slide 21: Activity Diagram -->
             <section>
-                <h2><i class="fas fa-stream"></i> Activity Diagram</h2>
+                <h2><i class="fas fa-stream"></i> 4. Activity Diagram</h2>
                 <div class="diagram-container">
-                    <div class="diagram-image">
-                        <img src="../files/04_activity_diagram.svg" alt="Activity Diagram" onerror="this.parentElement.innerHTML='<div class=\'diagram-placeholder\'><i class=\'fas fa-image\'></i><p>04_activity_diagram.svg</p></div>'">
+                    <div class="diagram-image" onclick="openModal('../files/04_activity_diagram.svg', 'Activity Diagram - Workflow process for forecast generation')">
+                        <img src="../files/04_activity_diagram.svg" alt="Activity Diagram">
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
                     </div>
                     <div class="diagram-info">
+                        <h4>Purpose</h4>
+                        <p>Illustrates the workflow process from user input to forecast display, including decision points.</p>
                         <h4>Workflow</h4>
-                        <p>Start → Input → Validate → Fetch → Analyze → Generate → Store → Display → End</p>
+                        <p>Start → Enter Location/Upload JSON → Validate Input → Fetch Data → Analyze Trends → Generate Forecast → Store Results → Display → End</p>
+                        <p class="diagram-note">Decision point: If invalid input → Show error & return</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Slide 16: State & Component Diagrams -->
+            <!-- Slide 22: State Diagram -->
             <section>
-                <h2><i class="fas fa-circle-notch"></i> State & Component Diagrams</h2>
-                <div class="dual-diagram">
-                    <div class="diagram-half">
-                        <img src="../files/05_state_diagram.svg" alt="State Diagram" onerror="this.parentElement.innerHTML='<div class=\'diagram-placeholder\'><i class=\'fas fa-image\'></i><p>05_state_diagram.svg</p></div>'">
-                        <p>Request States: Created → Processing → Completed/Failed</p>
-                    </div>
-                    <div class="diagram-half">
-                        <img src="../files/06_component_diagram.svg" alt="Component Diagram" onerror="this.parentElement.innerHTML='<div class=\'diagram-placeholder\'><i class=\'fas fa-image\'></i><p>06_component_diagram.svg</p></div>'">
-                        <p>System Components: Frontend, Backend, External</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Slide 17: ER Diagram -->
-            <section>
-                <h2><i class="fas fa-database"></i> ER Diagram</h2>
+                <h2><i class="fas fa-circle-notch"></i> 5. State Diagram</h2>
                 <div class="diagram-container">
-                    <div class="diagram-image">
-                        <img src="../files/07_er_diagram.svg" alt="ER Diagram" onerror="this.parentElement.innerHTML='<div class=\'diagram-placeholder\'><i class=\'fas fa-image\'></i><p>07_er_diagram.svg</p></div>'">
+                    <div class="diagram-image" onclick="openModal('../files/05_state_diagram.svg', 'State Diagram - Forecast request lifecycle states')">
+                        <img src="../files/05_state_diagram.svg" alt="State Diagram">
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
                     </div>
                     <div class="diagram-info">
-                        <h4>Database Tables</h4>
+                        <h4>Purpose</h4>
+                        <p>Shows the lifecycle states of a forecast request from creation to archival.</p>
+                        <h4>States</h4>
                         <ul>
-                            <li><strong>weather_request</strong> - id, query, type, days, status</li>
-                            <li><strong>forecast_result</strong> - id, request_id, location, data</li>
-                            <li>Relationship: One-to-Many</li>
+                            <li><strong>Created</strong> - Request submitted, waiting</li>
+                            <li><strong>Processing</strong> - Fetching, analyzing, generating</li>
+                            <li><strong>Completed</strong> - Successfully finished</li>
+                            <li><strong>Failed</strong> - Error occurred, can retry</li>
+                            <li><strong>Archived</strong> - History after 30 days</li>
                         </ul>
                     </div>
                 </div>
             </section>
 
+            <!-- Slide 23: Component Diagram -->
+            <section>
+                <h2><i class="fas fa-cubes"></i> 6. Component Diagram</h2>
+                <div class="diagram-container">
+                    <div class="diagram-image" onclick="openModal('../files/06_component_diagram.svg', 'Component Diagram - System components and their interactions')">
+                        <img src="../files/06_component_diagram.svg" alt="Component Diagram">
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                    <div class="diagram-info">
+                        <h4>Purpose</h4>
+                        <p>Shows the high-level system components and their interactions.</p>
+                        <h4>Components</h4>
+                        <ul>
+                            <li><strong>Frontend:</strong> index.html, loading.html, forecast.html, base.html</li>
+                            <li><strong>Static:</strong> style.css, galaxy.css, galaxy.js</li>
+                            <li><strong>Backend:</strong> app.py, forecast.py, models.py</li>
+                            <li><strong>External:</strong> SQLite DB, WeatherAPI</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 24: ER Diagram -->
+            <section>
+                <h2><i class="fas fa-database"></i> 7. ER Diagram</h2>
+                <div class="diagram-container">
+                    <div class="diagram-image" onclick="openModal('../files/07_er_diagram.svg', 'ER Diagram - Database entity relationships')">
+                        <img src="../files/07_er_diagram.svg" alt="ER Diagram">
+                        <span class="click-hint"><i class="fas fa-search-plus"></i> Click to enlarge</span>
+                    </div>
+                    <div class="diagram-info">
+                        <h4>Purpose</h4>
+                        <p>Shows the database structure and relationships between entities.</p>
+                        <h4>Entities</h4>
+                        <ul>
+                            <li><strong>weather_request:</strong> id (PK), query, query_type, range_days, created_at, status</li>
+                            <li><strong>forecast_result:</strong> id (PK), request_id (FK), location_name, forecast_data</li>
+                            <li><strong>historical_cache:</strong> location_query, date, temps, humidity</li>
+                        </ul>
+                        <p class="diagram-note">One weather_request has many forecast_results (1:N)</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- ==================== SECTION 5: ARCHITECTURE ==================== -->
-            
-            <!-- Slide 18: System Architecture -->
+
+            <!-- Slide 25: System Architecture -->
             <section>
                 <h2><i class="fas fa-cubes"></i> System Architecture (MVC)</h2>
                 <div class="architecture-diagram">
                     <div class="arch-layer client">
-                        <h4>Client Layer</h4>
+                        <h4>Client Layer (View)</h4>
                         <div class="arch-items">
                             <span>Browser</span>
                             <span>HTML/CSS</span>
                             <span>JavaScript</span>
                         </div>
                     </div>
-                    <div class="arch-arrow">↓ HTTP ↓</div>
+                    <div class="arch-arrow">↓ HTTP Requests ↓</div>
                     <div class="arch-layer server">
-                        <h4>Flask Application</h4>
+                        <h4>Flask Application (Controller)</h4>
                         <div class="arch-items">
                             <span>Routes (app.py)</span>
                             <span>Models (models.py)</span>
                             <span>Engine (forecast.py)</span>
                         </div>
                     </div>
-                    <div class="arch-arrow">↓ ↓</div>
+                    <div class="arch-arrow">↓ Data Flow ↓</div>
                     <div class="arch-bottom">
                         <div class="arch-layer database">
-                            <h4>SQLite DB</h4>
+                            <h4>SQLite DB (Model)</h4>
                         </div>
                         <div class="arch-layer api">
-                            <h4>WeatherAPI</h4>
+                            <h4>WeatherAPI (External)</h4>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Slide 19: Forecasting Algorithm -->
+            <!-- Slide 26: Forecasting Algorithm -->
             <section>
                 <h2><i class="fas fa-brain"></i> Forecasting Algorithm</h2>
                 <div class="algorithm-flow">
@@ -504,7 +683,7 @@
                 </div>
             </section>
 
-            <!-- Slide 20: Hybrid Approach -->
+            <!-- Slide 27: Hybrid Approach -->
             <section>
                 <h2><i class="fas fa-code-branch"></i> Hybrid Forecasting Approach</h2>
                 <div class="hybrid-comparison">
@@ -533,61 +712,9 @@
                 </div>
             </section>
 
-            <!-- ==================== SECTION 6: DEMO ==================== -->
-            
-            <!-- Slide 21: App Screenshots -->
-            <section>
-                <h2><i class="fas fa-desktop"></i> Application Demo</h2>
-                <div class="demo-screenshots">
-                    <div class="demo-item">
-                        <div class="demo-image">
-                            <img src="../files/4.png" alt="Home Page" onerror="this.parentElement.innerHTML='<div class=\'demo-placeholder\'><i class=\'fas fa-home\'></i></div>'">
-                        </div>
-                        <p>Home Page</p>
-                    </div>
-                    <div class="demo-item">
-                        <div class="demo-image">
-                            <img src="../files/5.png" alt="Loading" onerror="this.parentElement.innerHTML='<div class=\'demo-placeholder\'><i class=\'fas fa-spinner\'></i></div>'">
-                        </div>
-                        <p>Loading Animation</p>
-                    </div>
-                    <div class="demo-item">
-                        <div class="demo-image">
-                            <img src="../files/6.png" alt="Results" onerror="this.parentElement.innerHTML='<div class=\'demo-placeholder\'><i class=\'fas fa-chart-line\'></i></div>'">
-                        </div>
-                        <p>Forecast Results</p>
-                    </div>
-                </div>
-            </section>
+            <!-- ==================== SECTION 6: TESTING ==================== -->
 
-            <!-- Slide 22: More Screenshots -->
-            <section>
-                <h2><i class="fas fa-images"></i> More Screenshots</h2>
-                <div class="demo-screenshots">
-                    <div class="demo-item">
-                        <div class="demo-image">
-                            <img src="../files/7.png" alt="History" onerror="this.parentElement.innerHTML='<div class=\'demo-placeholder\'><i class=\'fas fa-history\'></i></div>'">
-                        </div>
-                        <p>Forecast History</p>
-                    </div>
-                    <div class="demo-item">
-                        <div class="demo-image">
-                            <img src="../files/8.png" alt="JSON Upload" onerror="this.parentElement.innerHTML='<div class=\'demo-placeholder\'><i class=\'fas fa-upload\'></i></div>'">
-                        </div>
-                        <p>JSON Upload</p>
-                    </div>
-                    <div class="demo-item">
-                        <div class="demo-image">
-                            <img src="../files/9.png" alt="Mobile" onerror="this.parentElement.innerHTML='<div class=\'demo-placeholder\'><i class=\'fas fa-mobile-alt\'></i></div>'">
-                        </div>
-                        <p>Mobile View</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ==================== SECTION 7: TESTING ==================== -->
-            
-            <!-- Slide 23: Test Results -->
+            <!-- Slide 28: Test Results -->
             <section>
                 <h2><i class="fas fa-vial"></i> Testing Results</h2>
                 <div class="test-results">
@@ -596,18 +723,19 @@
                             <tr><th>Test Case</th><th>Description</th><th>Status</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>TC-01</td><td>City Query (London, Tehran)</td><td class="pass">✓ Pass</td></tr>
-                            <tr><td>TC-02</td><td>Coordinate Query</td><td class="pass">✓ Pass</td></tr>
-                            <tr><td>TC-03</td><td>Invalid Location Error</td><td class="pass">✓ Pass</td></tr>
-                            <tr><td>TC-04</td><td>JSON File Upload</td><td class="pass">✓ Pass</td></tr>
-                            <tr><td>TC-05</td><td>History Persistence</td><td class="pass">✓ Pass</td></tr>
+                            <tr><td>TC-01</td><td>City Query (London, Tehran, Tokyo)</td><td class="pass">✓ Pass</td></tr>
+                            <tr><td>TC-02</td><td>Coordinate Query (lat/lon)</td><td class="pass">✓ Pass</td></tr>
+                            <tr><td>TC-03</td><td>Invalid Location Error Handling</td><td class="pass">✓ Pass</td></tr>
+                            <tr><td>TC-04</td><td>JSON File Upload & Processing</td><td class="pass">✓ Pass</td></tr>
+                            <tr><td>TC-05</td><td>Database Persistence</td><td class="pass">✓ Pass</td></tr>
                             <tr><td>TC-06</td><td>Cross-Browser Compatibility</td><td class="pass">✓ Pass</td></tr>
+                            <tr><td>TC-07</td><td>Responsive Design (Mobile)</td><td class="pass">✓ Pass</td></tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- Slide 24: Performance Metrics -->
+            <!-- Slide 29: Performance Metrics -->
             <section>
                 <h2><i class="fas fa-tachometer-alt"></i> Performance Metrics</h2>
                 <div class="metrics-grid">
@@ -638,9 +766,9 @@
                 </div>
             </section>
 
-            <!-- ==================== SECTION 8: CONCLUSION ==================== -->
-            
-            <!-- Slide 25: Lessons Learned -->
+            <!-- ==================== SECTION 7: CONCLUSION ==================== -->
+
+            <!-- Slide 30: Lessons Learned -->
             <section>
                 <h2><i class="fas fa-graduation-cap"></i> Lessons Learned</h2>
                 <div class="lessons-grid">
@@ -667,17 +795,17 @@
                 </div>
             </section>
 
-            <!-- Slide 26: Future Work -->
+            <!-- Slide 31: Future Work -->
             <section>
                 <h2><i class="fas fa-rocket"></i> Future Enhancements</h2>
                 <div class="future-list">
                     <div class="future-item">
                         <i class="fas fa-robot"></i>
-                        <span>Machine Learning Integration</span>
+                        <span>Machine Learning Integration for better predictions</span>
                     </div>
                     <div class="future-item">
                         <i class="fas fa-bell"></i>
-                        <span>Weather Alerts & Notifications</span>
+                        <span>Weather Alerts & Push Notifications</span>
                     </div>
                     <div class="future-item">
                         <i class="fas fa-map-marked-alt"></i>
@@ -685,47 +813,51 @@
                     </div>
                     <div class="future-item">
                         <i class="fas fa-mobile-alt"></i>
-                        <span>Mobile Application</span>
+                        <span>Native Mobile Application (iOS/Android)</span>
                     </div>
                     <div class="future-item">
                         <i class="fas fa-chart-area"></i>
-                        <span>Historical Data Visualization</span>
+                        <span>Advanced Historical Data Visualization</span>
+                    </div>
+                    <div class="future-item">
+                        <i class="fas fa-users"></i>
+                        <span>User Accounts & Personalization</span>
                     </div>
                 </div>
             </section>
 
-            <!-- Slide 27: Conclusion -->
+            <!-- Slide 32: Conclusion -->
             <section>
                 <h2><i class="fas fa-flag-checkered"></i> Conclusion</h2>
                 <div class="conclusion-grid">
                     <div class="conclusion-item">
                         <i class="fas fa-check-circle"></i>
-                        <span>Functional weather forecasting application</span>
+                        <span>Functional weather forecasting application ✓</span>
                     </div>
                     <div class="conclusion-item">
                         <i class="fas fa-check-circle"></i>
-                        <span>Intelligent trend-based predictions</span>
+                        <span>Intelligent trend-based predictions ✓</span>
                     </div>
                     <div class="conclusion-item">
                         <i class="fas fa-check-circle"></i>
-                        <span>Modern, responsive Galaxy UI</span>
+                        <span>Modern, responsive Galaxy UI ✓</span>
                     </div>
                     <div class="conclusion-item">
                         <i class="fas fa-check-circle"></i>
-                        <span>Complete UML documentation (7 diagrams)</span>
+                        <span>Complete UML documentation (7 diagrams) ✓</span>
                     </div>
                     <div class="conclusion-item">
                         <i class="fas fa-check-circle"></i>
-                        <span>Successful Kanban implementation</span>
+                        <span>Successful Kanban implementation ✓</span>
                     </div>
                     <div class="conclusion-item">
                         <i class="fas fa-check-circle"></i>
-                        <span>All requirements met & tested</span>
+                        <span>All requirements met & tested ✓</span>
                     </div>
                 </div>
             </section>
 
-            <!-- Slide 28: Thank You -->
+            <!-- Slide 33: Thank You -->
             <section data-background-gradient="linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #2d1b4e 100%)">
                 <div class="thank-you-slide">
                     <h1>Thank You! 🙏</h1>
@@ -733,6 +865,10 @@
                     <h2>Galaxy Weather</h2>
                     <p class="team-names">عسل هادیان و صدف باقریان</p>
                     <p class="team-names-en">Asal Hadian & Sadaf Bagherian</p>
+                    <div class="university-footer">
+                        <p>Kish International Campus • Sharif University</p>
+                        <p>Software Engineering Course • 2026</p>
+                    </div>
                     <div class="questions">
                         <i class="fas fa-question-circle"></i>
                         <span>Questions?</span>

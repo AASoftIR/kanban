@@ -8,6 +8,10 @@ A modern, single-page Flask web application that provides weather forecasts usin
 ![Flask](https://img.shields.io/badge/Flask-3.0-green.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
+## 📊 Live Presentation
+
+**[View Project Presentation](https://aasoftir.github.io/kanban/)** - Interactive slides with full documentation, UML diagrams, and project journey.
+
 ---
 
 ## ✨ Features
@@ -40,6 +44,22 @@ A modern, single-page Flask web application that provides weather forecasts usin
 ### External API
 
 - [WeatherAPI.com](https://www.weatherapi.com/)
+
+---
+
+## 📐 UML Diagrams
+
+The project includes 7 comprehensive UML diagrams:
+
+1. **Use Case Diagram** - System functionality from user perspective
+2. **Class Diagram** - System structure and class relationships
+3. **Sequence Diagram** - Interaction flow for forecast requests
+4. **Activity Diagram** - Workflow process for forecast generation
+5. **State Diagram** - Forecast request lifecycle states
+6. **Component Diagram** - System components and interactions
+7. **ER Diagram** - Database entity relationships
+
+All diagrams are available in the `/diagrams` folder as PlantUML source files and SVG exports in `/files`.
 
 ---
 

@@ -16,6 +16,73 @@
     --warning: #fbbf24;
 }
 
+/* ==================== Image Modal (Fullscreen Lightbox) ==================== */
+
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    padding-top: 30px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.95);
+    cursor: zoom-out;
+}
+
+.image-modal.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    max-width: 95%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 50px rgba(102, 126, 234, 0.3);
+    animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 10000;
+}
+
+.modal-close:hover {
+    color: var(--accent-cyan);
+}
+
+.modal-caption {
+    margin-top: 20px;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    text-align: center;
+    max-width: 80%;
+}
+
 /* ==================== Base Styles ==================== */
 
 .reveal {
@@ -65,6 +132,12 @@
     background: var(--glass-bg);
     font-weight: 600;
     color: var(--accent-cyan);
+}
+
+.section-intro {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
 }
 
 /* ==================== Export Button ==================== */
@@ -191,6 +264,312 @@
     font-size: 0.8rem;
     font-weight: 600;
     margin-right: 0.5rem;
+}
+
+/* ==================== Mission Grid ==================== */
+
+.mission-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.mission-item {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+.mission-item strong {
+    color: var(--text-primary);
+}
+
+.mission-item small {
+    color: var(--text-secondary);
+}
+
+.mission-num {
+    display: inline-block;
+    background: var(--accent-purple);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+/* ==================== Overview Content ==================== */
+
+.overview-content {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.mission-statement {
+    background: var(--glass-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--accent-cyan);
+}
+
+.mission-statement h3 {
+    margin-bottom: 0.5rem;
+    color: var(--accent-cyan);
+}
+
+.mission-statement p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.value-props {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.value-item {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.value-item i {
+    font-size: 1.5rem;
+    color: var(--accent-purple);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.value-item strong {
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+/* ==================== Features Grid ==================== */
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.feature-card {
+    background: var(--glass-bg);
+    padding: 1.2rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.feature-card h4 {
+    color: var(--accent-cyan);
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.feature-card h4 i {
+    margin-right: 0.5rem;
+}
+
+.feature-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.feature-tag {
+    background: var(--accent-purple);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+/* ==================== Journey Styles ==================== */
+
+.journey-intro {
+    background: var(--glass-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--accent-cyan);
+}
+
+.journey-intro p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.journey-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.journey-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* ==================== Trello Showcase ==================== */
+
+.trello-showcase {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    justify-items: center;
+}
+
+.trello-showcase.triple {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.trello-item {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.trello-item:hover {
+    transform: scale(1.05);
+}
+
+.trello-thumb {
+    width: 100%;
+    max-width: 400px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--glass-border);
+    transition: border-color 0.3s ease;
+}
+
+.trello-item:hover .trello-thumb {
+    border-color: var(--accent-cyan);
+}
+
+.trello-item p {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.click-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--accent-cyan);
+    margin-top: 0.3rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.trello-item:hover .click-hint,
+.diagram-image:hover .click-hint {
+    opacity: 1;
+}
+
+/* ==================== NFR Grid ==================== */
+
+.nfr-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.nfr-card {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+}
+
+.nfr-card h4 {
+    color: var(--accent-cyan);
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+}
+
+.nfr-card h4 i {
+    margin-right: 0.3rem;
+}
+
+.nfr-card ul {
+    font-size: 0.75rem;
+}
+
+.nfr-card li {
+    padding: 0.2rem 0;
+    color: var(--text-secondary);
+}
+
+/* ==================== Patterns Grid ==================== */
+
+.patterns-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.pattern-card {
+    background: var(--glass-bg);
+    padding: 1.2rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.pattern-card h4 {
+    color: var(--accent-cyan);
+    margin-bottom: 0.5rem;
+}
+
+.pattern-card h4 i {
+    margin-right: 0.5rem;
+}
+
+.pattern-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.pattern-card ul {
+    font-size: 0.8rem;
+}
+
+.pattern-card li {
+    padding: 0.2rem 0;
+    color: var(--text-secondary);
 }
 
 /* ==================== Problem & Solution ==================== */
@@ -521,14 +900,33 @@
     max-height: 400px;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+    position: relative;
+}
+
+.diagram-image:hover {
+    border-color: var(--accent-cyan);
+    transform: scale(1.02);
 }
 
 .diagram-image img {
     max-width: 100%;
-    max-height: 380px;
+    max-height: 350px;
     object-fit: contain;
+}
+
+.diagram-image .click-hint {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
 }
 
 .diagram-placeholder {
@@ -549,7 +947,18 @@
 
 .diagram-info h4 {
     color: var(--accent-cyan);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+
+.diagram-info h4:first-child {
+    margin-top: 0;
+}
+
+.diagram-info p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
 }
 
 .diagram-info li {
@@ -559,6 +968,14 @@
 
 .diagram-info ol {
     padding-left: 1.5rem;
+    list-style: decimal;
+}
+
+.diagram-note {
+    font-style: italic;
+    color: var(--accent-cyan) !important;
+    font-size: 0.8rem !important;
+    margin-top: 0.5rem;
 }
 
 /* ==================== Dual Diagram ==================== */
@@ -934,7 +1351,17 @@
 .team-names-en {
     font-size: 1.1rem;
     color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.university-footer {
     margin-bottom: 2rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.university-footer p {
+    margin: 0.2rem 0;
 }
 
 .questions {

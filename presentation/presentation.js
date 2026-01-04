@@ -1,6 +1,38 @@
 // ==================== Galaxy Weather Presentation Script ====================
 
-// Initialize Reveal.js
+// ==================== Image Modal Functions ====================
+
+function openModal(imageSrc, caption) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    
+    modal.classList.add('active');
+    modalImg.src = imageSrc;
+    modalCaption.textContent = caption || '';
+    
+    // Prevent Reveal.js navigation while modal is open
+    document.body.style.overflow = 'hidden';
+    
+    // Add keyboard listener for ESC
+    document.addEventListener('keydown', handleModalKeydown);
+}
+
+function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', handleModalKeydown);
+}
+
+function handleModalKeydown(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+}
+
+// ==================== Initialize Reveal.js ====================
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Reveal.js with configuration
     Reveal.initialize({
@@ -32,6 +64,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Export button click handler
     document.getElementById('exportBtn').addEventListener('click', exportToPPTX);
+    
+    // Close modal when clicking outside the image
+    document.getElementById('imageModal').addEventListener('click', function(e) {
+        if (e.target === this || e.target.classList.contains('modal-close')) {
+            closeModal();
+        }
+    });
 });
 
 // ==================== PowerPoint Export Function ====================
